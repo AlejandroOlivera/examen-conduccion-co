@@ -1,0 +1,191 @@
+/* ============================================================
+   Sistema de diseño — Examen de Conduccion CO
+   Concepto: senalizacion vial. Tipografias derivadas de letreros
+   (Overpass = Highway Gothic) y colores de semaforo para feedback.
+   ============================================================ */
+
+:root {
+  /* Superficies */
+  --paper: #f4f1ea;          /* fondo papel calido */
+  --paper-2: #ece7dc;
+  --card: #ffffff;
+  --asphalt: #1c2024;        /* asfalto / oscuro */
+  --asphalt-2: #2b3036;
+  --line: #d9d3c6;           /* bordes suaves */
+
+  /* Tinta */
+  --ink: #1c2024;
+  --ink-soft: #545a61;
+  --ink-faint: #646b74;
+
+  /* Acentos tipo senal de transito */
+  --signal-green: #177a41;
+  --signal-green-bg: #e3f3e8;
+  --signal-amber: #e8a317;        /* solo decorativo (rayas, bordes, fondos) */
+  --signal-amber-dark: #8a5a00;   /* ambar para texto y foco: pasa AA sobre claro */
+  --signal-amber-bg: #fbf0d6;
+  --signal-red: #b3271f;
+  --signal-red-bg: #fbe5e3;
+  --signal-blue: #2b6cb0;
+  --signal-blue-bg: #e2edf7;
+
+  /* Acentos por modo (se sobreescriben con data-accent) */
+  --accent: var(--signal-blue);
+  --accent-bg: var(--signal-blue-bg);
+
+  /* Geometria */
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 1px 2px rgba(28, 32, 36, 0.06), 0 8px 28px -12px rgba(28, 32, 36, 0.22);
+  --shadow-lg: 0 24px 60px -24px rgba(28, 32, 36, 0.4);
+
+  /* Tipografia */
+  --font-display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  --font-body: 'Overpass', system-ui, sans-serif;
+
+  --maxw: 1080px;
+}
+
+[data-accent='verde']   { --accent: var(--signal-green); --accent-bg: var(--signal-green-bg); }
+[data-accent='ambar']   { --accent: var(--signal-amber-dark); --accent-bg: var(--signal-amber-bg); }
+[data-accent='rojo']    { --accent: var(--signal-red);   --accent-bg: var(--signal-red-bg); }
+[data-accent='azul']    { --accent: var(--signal-blue);  --accent-bg: var(--signal-blue-bg); }
+[data-accent='asfalto'] { --accent: var(--asphalt);      --accent-bg: var(--paper-2); }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 100% 0, rgba(43, 108, 176, 0.06), transparent 38%),
+    radial-gradient(circle at 0 100%, rgba(31, 138, 76, 0.05), transparent 40%);
+  background-attachment: fixed;
+  line-height: 1.55;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+p { margin: 0 0 1rem; }
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+/* Linea de carretera decorativa (rayas amarillas) */
+.road-line {
+  height: 6px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--signal-amber) 0 28px,
+    transparent 28px 52px
+  );
+  opacity: 0.85;
+}
+
+/* Boton base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+  padding: 0.72rem 1.4rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  background: var(--accent);
+  color: #fff;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn--ghost:hover { background: var(--card); }
+
+.btn--dark { background: var(--asphalt); }
+
+/* Etiquetas */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--signal-amber-dark);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* El header es sticky: evita que tape el destino de foco o de anclas. */
+:target,
+:focus {
+  scroll-margin-top: 90px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

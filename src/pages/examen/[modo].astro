@@ -1,0 +1,514 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { EXAM_MODES, getMode } from '../../data/modes';
+import { questionsForGroups } from '../../data/questions';
+import type { QuizConfig } from '../../data/types';
+
+export function getStaticPaths() {
+  return EXAM_MODES.map((mode) => ({ params: { modo: mode.slug } }));
+}
+
+const { modo } = Astro.params;
+const mode = getMode(modo ?? '');
+if (!mode) {
+  // Inalcanzable en SSG: getStaticPaths solo genera slugs validos.
+  throw new Error(`Modo desconocido: ${modo}`);
+}
+
+const questions = questionsForGroups(mode.groups);
+
+// Configuracion que se entrega a la isla de cliente.
+const config: QuizConfig = {
+  mode: mode.slug,
+  title: mode.title,
+  immediateFeedback: mode.immediateFeedback,
+  timerSeconds: mode.timerSeconds ?? null,
+  passPercent: mode.passPercent ?? null,
+  sample: mode.sample ?? null,
+};
+
+// Solo enviamos al cliente los campos necesarios de cada pregunta.
+const payload = questions.map((q) => ({
+  id: q.id,
+  group: q.group,
+  prompt: q.prompt,
+  options: q.options,
+  answer: q.answer,
+  explanation: q.explanation,
+}));
+
+// Escapa el signo "menor que" (charCode 60) como secuencia unicode para
+// que ningun texto pueda cerrar el script JSON. Se evita escribir ese
+// caracter literal aqui: rompe el escaner de dependencias de Vite en dev.
+const payloadJson = JSON.stringify(payload)
+  .split(String.fromCharCode(60))
+  .join(String.fromCharCode(92) + 'u003c');
+---
+
+<BaseLayout title={`${mode.short} · Taller B1`} description={mode.description}>
+  <SiteHeader slot="header" backHref="/" backLabel="Todos los temas" />
+
+  <section class="container head" data-accent={mode.accent}>
+    <span class="tag">{mode.short}</span>
+    <h1>{mode.title}</h1>
+    <p class="lead">{mode.description}</p>
+    <ul class="facts">
+      <li><strong>{mode.sample ?? questions.length}</strong> preguntas</li>
+      {mode.timerSeconds ? <li><strong>{Math.round(mode.timerSeconds / 60)}</strong> minutos</li> : null}
+      {
+        mode.passPercent ? (
+          <li>
+            Aprobacion <strong>{mode.passPercent}%</strong>
+          </li>
+        ) : (
+          <li>Retroalimentacion inmediata</li>
+        )
+      }
+      <li class="hint">Atajos: <kbd>A</kbd>–<kbd>D</kbd> · <kbd>Enter</kbd></li>
+    </ul>
+  </section>
+
+  <section class="container">
+    <div id="quiz-root" class="quiz-root" data-accent={mode.accent} data-config={JSON.stringify(config)}>
+      <script type="application/json" is:inline set:html={payloadJson} />
+      <noscript>
+        <p class="noscript">
+          Este examen interactivo necesita JavaScript activado. Mientras tanto puedes
+          <a href="/">volver al inicio</a> y repasar los temas y limites de velocidad.
+        </p>
+      </noscript>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<script>
+  import { initQuiz } from '../../scripts/quiz';
+  const root = document.getElementById('quiz-root');
+  if (root) initQuiz(root);
+</script>
+
+<style>
+  .head {
+    padding-top: 2.5rem;
+    padding-bottom: 1.5rem;
+  }
+  .head h1 {
+    font-size: clamp(1.6rem, 4.5vw, 2.5rem);
+    margin: 0.7rem 0 0.5rem;
+    max-width: 22ch;
+  }
+  .lead {
+    color: var(--ink-soft);
+    max-width: 60ch;
+    font-size: 1.05rem;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    align-items: center;
+  }
+  .facts li {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  .facts strong {
+    color: var(--accent);
+    font-size: 1.15rem;
+  }
+  .facts .hint {
+    margin-left: auto;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+  }
+  /* En pantallas tactiles o estrechas los atajos de teclado son ruido. */
+  @media (hover: none), (max-width: 700px) {
+    .facts .hint {
+      display: none;
+    }
+  }
+  kbd {
+    font-family: var(--font-display);
+    background: var(--asphalt);
+    color: #fff;
+    border-radius: 5px;
+    padding: 0.05rem 0.4rem;
+    font-size: 0.78rem;
+  }
+  .quiz-root {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: clamp(1.1rem, 3vw, 2rem);
+    margin-bottom: 2rem;
+    min-height: 320px;
+  }
+  .noscript {
+    color: var(--signal-red);
+  }
+</style>
+
+<!--
+  El DOM del quiz lo genera quiz.ts en runtime con document.createElement,
+  sin el atributo de scoping de Astro: estos estilos DEBEN ser globales
+  o ninguna regla aplicaria a la isla.
+-->
+<style is:global>
+  .quiz__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+    /* Mantiene contador y cronometro visibles con preguntas largas en movil. */
+    position: sticky;
+    top: 72px;
+    z-index: 5;
+    background: var(--card);
+    padding-block: 0.35rem;
+  }
+  .quiz__counter {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .quiz__timer {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    background: var(--asphalt);
+    color: #fff;
+    padding: 0.18rem 0.7rem;
+    border-radius: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .quiz__timer.is-low {
+    background: var(--signal-red);
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.55;
+    }
+  }
+  .quiz__progress {
+    height: 7px;
+    background: var(--paper-2);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 1.4rem;
+  }
+  .quiz__progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+  }
+  .quiz__prompt {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 1.2rem;
+  }
+  .quiz__options {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    width: 100%;
+    text-align: left;
+    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.95rem 1.1rem;
+    font: inherit;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.12s ease, background 0.12s ease, transform 0.08s ease;
+  }
+  .opt:hover:not(:disabled) {
+    border-color: var(--accent);
+    transform: translateX(2px);
+  }
+  .opt__key {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+  .opt__text {
+    padding-top: 0.18rem;
+  }
+  .opt__mark {
+    flex: none;
+    margin-left: auto;
+    padding-top: 0.18rem;
+    font-weight: 700;
+  }
+  .opt.is-selected {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .opt.is-selected .opt__key {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .opt.is-correct {
+    border-color: var(--signal-green);
+    background: var(--signal-green-bg);
+  }
+  .opt.is-correct .opt__key {
+    background: var(--signal-green);
+    color: #fff;
+    border-color: var(--signal-green);
+  }
+  .opt.is-wrong {
+    border-color: var(--signal-red);
+    background: var(--signal-red-bg);
+  }
+  .opt.is-wrong .opt__key {
+    background: var(--signal-red);
+    color: #fff;
+    border-color: var(--signal-red);
+  }
+  .opt:disabled {
+    cursor: default;
+  }
+
+  .quiz__feedback {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0 0.2rem;
+  }
+  .quiz__feedback:empty {
+    display: none;
+  }
+  .quiz__feedback.is-ok strong {
+    color: var(--signal-green);
+  }
+  .quiz__feedback.is-no strong {
+    color: var(--signal-red);
+  }
+  .quiz__feedback span {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .quiz__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-top: 1.6rem;
+  }
+  .quiz__nav-right {
+    display: flex;
+    gap: 0.6rem;
+    margin-left: auto;
+  }
+  .quiz__answered {
+    margin: 0.9rem 0 0;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    text-align: right;
+  }
+
+  /* ---------- resultados ---------- */
+  .result__timeup {
+    background: var(--signal-amber-bg);
+    border: 1px solid var(--signal-amber);
+    border-radius: var(--radius-sm);
+    color: var(--signal-amber-dark);
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+  }
+  .result {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .result__ring {
+    --pct: 0;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+      conic-gradient(var(--accent) calc(var(--pct) * 1%), var(--paper-2) 0);
+    flex: none;
+  }
+  .result__ring.is-pass {
+    background: conic-gradient(var(--signal-green) calc(var(--pct) * 1%), var(--paper-2) 0);
+  }
+  .result__ring.is-fail {
+    background: conic-gradient(var(--signal-red) calc(var(--pct) * 1%), var(--paper-2) 0);
+  }
+  .result__pct {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--card);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.7rem;
+  }
+  .result__info h2 {
+    font-size: 1.8rem;
+  }
+  .result__score {
+    color: var(--ink-soft);
+    margin: 0.2rem 0;
+  }
+  .result__verdict {
+    font-family: var(--font-display);
+    font-weight: 700;
+    margin: 0;
+  }
+  .result__verdict.ok {
+    color: var(--signal-green);
+  }
+  .result__verdict.no {
+    color: var(--signal-red);
+  }
+  .result__actions {
+    display: flex;
+    gap: 0.7rem;
+    margin: 1.6rem 0 2rem;
+    flex-wrap: wrap;
+  }
+
+  .review__title {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  .review {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .review__item {
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--signal-green);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .review__item.no {
+    border-left-color: var(--signal-red);
+  }
+  .review__item summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+  }
+  .review__item summary::-webkit-details-marker {
+    display: none;
+  }
+  /* Sustituye el marker nativo oculto: indica que el item es expandible. */
+  .review__item summary::after {
+    content: '▸';
+    flex: none;
+    margin-left: auto;
+    color: var(--ink-faint);
+    transition: transform 0.15s ease;
+  }
+  .review__item[open] summary::after {
+    transform: rotate(90deg);
+  }
+  .review__badge {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-weight: 700;
+    color: #fff;
+    background: var(--signal-green);
+  }
+  .review__item.no .review__badge {
+    background: var(--signal-red);
+  }
+  .review__body {
+    padding: 0 1rem 1rem 2.6rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .review__opt {
+    display: flex;
+    gap: 0.6rem;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+  }
+  .review__opt.is-correct {
+    background: var(--signal-green-bg);
+    color: var(--signal-green);
+    font-weight: 600;
+  }
+  .review__opt.is-wrong {
+    background: var(--signal-red-bg);
+    color: var(--signal-red);
+    text-decoration: line-through;
+  }
+  .review__optkey {
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+  .review__exp {
+    margin: 0.4rem 0 0;
+    font-size: 0.9rem;
+    color: var(--ink);
+    border-top: 1px dashed var(--line);
+    padding-top: 0.5rem;
+  }
+  .review__note {
+    color: var(--signal-amber-dark);
+    font-size: 0.88rem;
+    margin: 0;
+  }
+
+  @media (max-width: 560px) {
+    .quiz__nav {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+    .quiz__nav-right {
+      margin-left: 0;
+    }
+    .quiz__nav .btn {
+      width: 100%;
+    }
+  }
+</style>

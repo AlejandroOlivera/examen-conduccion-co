@@ -1,0 +1,40 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="road-line" role="presentation"></div>
+  <div class="container inner">
+    <p class="legal">
+      Material de estudio basado en la Ley 769 de 2002 (Codigo Nacional de Transito) y sus
+      reformas (Ley 1383/2010, Ley 1696/2013, Ley 2161/2021, Ley 2251/2022) y la Resolucion
+      20253040037125 de 2025 (CALE). No esta afiliado a ninguna entidad oficial. Verifica
+      siempre la normativa vigente en <a href="https://mintransporte.gov.co">mintransporte.gov.co</a>.
+    </p>
+    <p class="copy">© {year} · Taller B1 · Hecho para practicar, no reemplaza el examen oficial.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 4rem;
+    background: var(--asphalt);
+    color: #c2c8cf;
+  }
+  .inner {
+    padding-block: 1.75rem 2.25rem;
+  }
+  .legal {
+    font-size: 0.84rem;
+    max-width: 70ch;
+    margin-bottom: 0.75rem;
+  }
+  .legal a {
+    color: #f0c668;
+  }
+  .copy {
+    font-size: 0.8rem;
+    color: #8a9099;
+    margin: 0;
+  }
+</style>

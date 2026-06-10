@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ModeCard from '../components/ModeCard.astro';
+import { EXAM_MODES } from '../data/modes';
+import { questionsForGroups, QUESTIONS } from '../data/questions';
+
+const total = QUESTIONS.length;
+
+// Datos de referencia rapida (limites de velocidad — Ley 2251 de 2022).
+const speeds = [
+  { via: 'Zonas escolares y residenciales', max: '30 km/h' },
+  { via: 'Vias urbanas y municipales', max: '50 km/h' },
+  { via: 'Vias rurales', max: '80 km/h' },
+  { via: 'Carreteras nacionales y departamentales', max: '90 km/h' },
+  { via: 'Doble calzada sin pasos peatonales', max: '120 km/h' },
+];
+---
+
+<BaseLayout title="Taller B1 · Examen teorico de conduccion (Colombia)">
+  <SiteHeader slot="header" />
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <span class="tag">Licencia B1 · Carro particular</span>
+      <h1 class="hero__title">
+        Prepara tu <span>examen teorico</span> de conduccion
+      </h1>
+      <p class="hero__lead">
+        Taller interactivo con la estructura oficial del CALE: cuatro grupos tematicos, una
+        seccion para carro mecanico y un simulacro cronometrado. Basado en la normativa
+        colombiana vigente.
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--dark" href="/examen/simulacro">Hacer el simulacro</a>
+        <a class="btn btn--ghost" href="#modos">Practicar por temas</a>
+      </div>
+      <dl class="hero__stats">
+        <div><dt>{total}</dt><dd>preguntas con explicacion</dd></div>
+        <div><dt>40 / 40</dt><dd>simulacro: preguntas / minutos</dd></div>
+        <div><dt>80%</dt><dd>para aprobar</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Modos -->
+  <section id="modos" class="container section">
+    <header class="section__head">
+      <h2>Elige un tema para practicar</h2>
+      <p>Cada bloque te da retroalimentacion inmediata y la justificacion normativa de cada respuesta.</p>
+    </header>
+    <div class="grid">
+      {
+        EXAM_MODES.map((mode) => (
+          <ModeCard mode={mode} count={questionsForGroups(mode.groups).length} />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Referencia rapida -->
+  <section class="container section">
+    <header class="section__head">
+      <h2>Antes de empezar: limites de velocidad</h2>
+      <p>Modificados por la Ley 2251 de 2022 ("Ley Julian Esteban"). Son de las preguntas mas frecuentes.</p>
+    </header>
+    <div class="speeds">
+      {
+        speeds.map((s) => (
+          <div class="speed">
+            <span class="speed__max">{s.max}</span>
+            <span class="speed__via">{s.via}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<style>
+  .hero {
+    background:
+      linear-gradient(180deg, rgba(28, 32, 36, 0) 60%, rgba(28, 32, 36, 0.03)),
+      var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero__inner {
+    padding-block: clamp(2.5rem, 7vw, 5rem);
+  }
+  .hero__title {
+    font-size: clamp(2.2rem, 7vw, 4.2rem);
+    line-height: 0.98;
+    margin: 1rem 0;
+    max-width: 16ch;
+  }
+  .hero__title span {
+    color: var(--signal-green);
+    position: relative;
+    white-space: nowrap;
+  }
+  .hero__title span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.06em;
+    height: 0.14em;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--signal-amber) 0 14px,
+      transparent 14px 24px
+    );
+  }
+  .hero__lead {
+    font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+    color: var(--ink-soft);
+    max-width: 58ch;
+  }
+  .hero__cta {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-top: 1.6rem;
+  }
+  .hero__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    margin: 2.5rem 0 0;
+    padding-top: 1.6rem;
+    border-top: 1px dashed var(--line);
+  }
+  .hero__stats div {
+    display: flex;
+    flex-direction: column;
+  }
+  .hero__stats dt {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .hero__stats dd {
+    margin: 0.3rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    max-width: 18ch;
+  }
+
+  .section {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+  .section__head {
+    margin-bottom: 1.8rem;
+    max-width: 60ch;
+  }
+  .section__head h2 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+  }
+  .section__head p {
+    color: var(--ink-soft);
+    margin: 0.5rem 0 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.1rem;
+  }
+  /* El simulacro (ultima tarjeta) es el modo estrella: fila completa
+     destacada en vez de quedar huerfano en la rejilla de 3 columnas. */
+  @media (min-width: 900px) {
+    .grid > :global(.card:last-child) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .speeds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.9rem;
+  }
+  .speed {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--signal-amber);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    box-shadow: var(--shadow);
+  }
+  .speed__max {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: var(--ink);
+  }
+  .speed__via {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+</style>

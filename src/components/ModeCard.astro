@@ -1,0 +1,98 @@
+---
+import type { ExamMode } from '../data/types';
+
+interface Props {
+  mode: ExamMode;
+  count: number; // numero de preguntas disponibles
+}
+const { mode, count } = Astro.props;
+
+const meta: string[] = [];
+if (mode.sample) {
+  meta.push(`${mode.sample} preguntas`);
+} else {
+  meta.push(`${count} preguntas`);
+}
+if (mode.timerSeconds) meta.push(`${Math.round(mode.timerSeconds / 60)} min`);
+if (mode.passPercent) meta.push(`Aprueba ${mode.passPercent}%`);
+else meta.push('Practica libre');
+---
+
+<a class="card" href={`/examen/${mode.slug}`} data-accent={mode.accent}>
+  <div class="card__top">
+    <span class="tag">{mode.short}</span>
+    {mode.slug === 'simulacro' && <span class="card__star" aria-hidden="true">★</span>}
+  </div>
+  <h3 class="card__title">{mode.title}</h3>
+  <p class="card__desc">{mode.description}</p>
+  <ul class="card__meta">
+    {meta.map((m) => <li>{m}</li>)}
+  </ul>
+  <span class="card__cta">
+    Empezar <span aria-hidden="true">&rarr;</span>
+  </span>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+    transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+    height: 100%;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+  }
+  .card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card__star {
+    color: var(--signal-amber);
+    font-size: 1.3rem;
+  }
+  .card__title {
+    font-size: 1.18rem;
+    line-height: 1.12;
+  }
+  .card__desc {
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    margin: 0;
+    flex: 1;
+  }
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0.4rem 0 0;
+  }
+  .card__meta li {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+  }
+  .card__cta {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 0.5rem;
+  }
+</style>
