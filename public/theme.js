@@ -7,9 +7,6 @@
   window.__themeInit = true;
 
   var root = document.documentElement;
-  // Marca JS activo antes del primer paint: habilita el estado oculto inicial
-  // del revelado (.js .reveal) sin ocultar contenido a usuarios sin JS.
-  root.classList.add('js');
 
   function resolve() {
     try {
