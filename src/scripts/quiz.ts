@@ -6,14 +6,14 @@
    ============================================================ */
 
 import type { Question, QuizConfig } from '../data/types';
-
-interface PreparedQuestion {
-  id: string;
-  prompt: string;
-  options: string[];
-  correctIndex: number;
-  explanation: string;
-}
+import {
+  type PreparedQuestion,
+  formatTime,
+  isPassing,
+  prepareQuestion,
+  sampleQuestions,
+  scoreAnswers,
+} from './quiz-core';
 
 interface QuizState {
   questions: PreparedQuestion[];
@@ -29,38 +29,6 @@ type FocusTarget = 'none' | 'prompt' | 'nav' | { option: number };
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 const WARN_SECONDS = 300; // primer aviso de tiempo
 const LOW_SECONDS = 60; // aviso final + estado visual
-
-/** Fisher-Yates inmutable. */
-function shuffle<T>(input: readonly T[]): T[] {
-  const arr = [...input];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const a = arr[i] as T;
-    const b = arr[j] as T;
-    arr[i] = b;
-    arr[j] = a;
-  }
-  return arr;
-}
-
-/** Prepara una pregunta barajando sus opciones y recalculando el indice correcto. */
-function prepare(raw: Question): PreparedQuestion {
-  const tagged = raw.options.map((text, i) => ({ text, correct: i === raw.answer }));
-  const mixed = shuffle(tagged);
-  return {
-    id: raw.id,
-    prompt: raw.prompt,
-    options: mixed.map((o) => o.text),
-    correctIndex: mixed.findIndex((o) => o.correct),
-    explanation: raw.explanation,
-  };
-}
-
-function formatTime(totalSeconds: number): string {
-  const m = Math.floor(totalSeconds / 60);
-  const s = totalSeconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
 
 function reducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -105,13 +73,10 @@ export function initQuiz(root: HTMLElement): () => void {
     return () => controller.abort();
   }
 
-  let selected = shuffle(pool);
-  if (config.sample && config.sample < selected.length) {
-    selected = selected.slice(0, config.sample);
-  }
+  const selected = sampleQuestions(pool, config.sample);
 
   const state: QuizState = {
-    questions: selected.map(prepare),
+    questions: selected.map((q) => prepareQuestion(q)),
     answers: new Array<number | null>(selected.length).fill(null),
     index: 0,
     finished: false,
@@ -134,7 +99,7 @@ export function initQuiz(root: HTMLElement): () => void {
   let lastAnnounce = '';
   function announce(msg: string): void {
     // Alterna un espacio final para forzar el re-anuncio de mensajes identicos.
-    lastAnnounce = msg === lastAnnounce ? `${msg} ` : msg;
+    lastAnnounce = msg === lastAnnounce ? `${msg}\u00A0` : msg;
     live.textContent = lastAnnounce;
   }
 
@@ -186,10 +151,7 @@ export function initQuiz(root: HTMLElement): () => void {
   }
 
   function score(): number {
-    return state.questions.reduce(
-      (acc, q, i) => acc + (state.answers[i] === q.correctIndex ? 1 : 0),
-      0,
-    );
+    return scoreAnswers(state.questions, state.answers);
   }
 
   function renderQuestion(focus: FocusTarget): void {
@@ -337,9 +299,7 @@ export function initQuiz(root: HTMLElement): () => void {
 
     // En simulacro, indicador de cuantas respondidas
     if (!config.immediateFeedback) {
-      stage.append(
-        el('p', { class: 'quiz__answered' }, [`Respondidas: ${done} / ${total}`]),
-      );
+      stage.append(el('p', { class: 'quiz__answered' }, [`Respondidas: ${done} / ${total}`]));
     }
 
     // El re-render destruye el elemento enfocado; sin esto, el foco cae a
@@ -403,8 +363,7 @@ export function initQuiz(root: HTMLElement): () => void {
     const correct = score();
     const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
     // Umbral sobre la fraccion exacta, no sobre el porcentaje redondeado.
-    const passed =
-      config.passPercent === null ? null : total > 0 && (correct / total) * 100 >= config.passPercent;
+    const passed = isPassing(correct, total, config.passPercent);
 
     if (endedByTimeout) {
       stage.append(
@@ -508,9 +467,8 @@ export function initQuiz(root: HTMLElement): () => void {
   }
 
   function restart(): void {
-    let again = shuffle(pool);
-    if (config.sample && config.sample < again.length) again = again.slice(0, config.sample);
-    state.questions = again.map(prepare);
+    const again = sampleQuestions(pool, config.sample);
+    state.questions = again.map((q) => prepareQuestion(q));
     state.answers = new Array<number | null>(again.length).fill(null);
     state.index = 0;
     state.finished = false;
@@ -526,36 +484,44 @@ export function initQuiz(root: HTMLElement): () => void {
   // Atajos de teclado: 1-6 / A-F para seleccionar, Enter para avanzar.
   // Activos solo sin foco concreto (body) o con el foco dentro del quiz,
   // para no interferir con el resto de la pagina ni con tecnologias de apoyo.
-  document.addEventListener('keydown', (ev) => {
-    if (state.finished) return;
-    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
-    const active = document.activeElement;
-    if (active && active !== document.body && !root.contains(active)) return;
-    const q = state.questions[state.index];
-    if (!q) return;
-    const key = ev.key.toLowerCase();
-    const numIdx = '123456'.indexOf(key);
-    const letIdx = 'abcdef'.indexOf(key);
-    const idx = numIdx >= 0 ? numIdx : letIdx;
-    if (idx >= 0 && idx < q.options.length) {
-      ev.preventDefault();
-      onSelect(idx);
-    } else if (ev.key === 'Enter') {
-      // Con el foco sobre un control, Enter ya lo activa de forma nativa;
-      // duplicarlo causaria doble accion (p. ej. responder Y avanzar).
-      if (active instanceof HTMLElement && active.closest('button, a, summary')) return;
-      ev.preventDefault();
-      const next = stage.querySelector<HTMLButtonElement>('.quiz__nav-right .btn:not(:disabled)');
-      if (next) next.click();
-    }
-  }, { signal });
+  document.addEventListener(
+    'keydown',
+    (ev) => {
+      if (state.finished) return;
+      if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+      const active = document.activeElement;
+      if (active && active !== document.body && !root.contains(active)) return;
+      const q = state.questions[state.index];
+      if (!q) return;
+      const key = ev.key.toLowerCase();
+      const numIdx = '123456'.indexOf(key);
+      const letIdx = 'abcdef'.indexOf(key);
+      const idx = numIdx >= 0 ? numIdx : letIdx;
+      if (idx >= 0 && idx < q.options.length) {
+        ev.preventDefault();
+        onSelect(idx);
+      } else if (ev.key === 'Enter') {
+        // Con el foco sobre un control, Enter ya lo activa de forma nativa;
+        // duplicarlo causaria doble accion (p. ej. responder Y avanzar).
+        if (active instanceof HTMLElement && active.closest('button, a, summary')) return;
+        ev.preventDefault();
+        const next = stage.querySelector<HTMLButtonElement>('.quiz__nav-right .btn:not(:disabled)');
+        if (next) next.click();
+      }
+    },
+    { signal },
+  );
 
   // Evita perder un intento en curso al recargar o cerrar por accidente.
-  window.addEventListener('beforeunload', (ev) => {
-    const started = state.answers.some((a) => a !== null);
-    if (!started || state.finished) return;
-    ev.preventDefault();
-  }, { signal });
+  window.addEventListener(
+    'beforeunload',
+    (ev) => {
+      const started = state.answers.some((a) => a !== null);
+      if (!started || state.finished) return;
+      ev.preventDefault();
+    },
+    { signal },
+  );
 
   // Arranque
   renderQuestion('none');

@@ -21,7 +21,13 @@ else meta.push('Practica libre');
 <a class="card reveal" href={`/examen/${mode.slug}`} data-accent={mode.accent}>
   <div class="card__top">
     <span class="tag">{mode.short}</span>
-    {mode.slug === 'simulacro' && <span class="card__star" aria-hidden="true">★</span>}
+    {
+      mode.slug === 'simulacro' && (
+        <span class="card__star" aria-hidden="true">
+          ★
+        </span>
+      )
+    }
   </div>
   <h3 class="card__title">{mode.title}</h3>
   <p class="card__desc">{mode.description}</p>
@@ -45,7 +51,10 @@ else meta.push('Practica libre');
     padding: 1.4rem;
     color: var(--ink);
     box-shadow: var(--shadow);
-    transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+    transition:
+      transform 0.14s ease,
+      box-shadow 0.14s ease,
+      border-color 0.14s ease;
     height: 100%;
   }
   .card:hover {

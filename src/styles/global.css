@@ -6,12 +6,12 @@
 
 :root {
   /* Superficies */
-  --paper: #f4f1ea;          /* fondo papel calido */
+  --paper: #f4f1ea; /* fondo papel calido */
   --paper-2: #ece7dc;
   --card: #ffffff;
-  --asphalt: #1c2024;        /* asfalto / oscuro */
+  --asphalt: #1c2024; /* asfalto / oscuro */
   --asphalt-2: #2b3036;
-  --line: #d9d3c6;           /* bordes suaves */
+  --line: #d9d3c6; /* bordes suaves */
 
   /* Tinta */
   --ink: #1c2024;
@@ -21,8 +21,8 @@
   /* Acentos tipo senal de transito */
   --signal-green: #177a41;
   --signal-green-bg: #e3f3e8;
-  --signal-amber: #e8a317;        /* solo decorativo (rayas, bordes, fondos) */
-  --signal-amber-dark: #8a5a00;   /* ambar para texto y foco: pasa AA sobre claro */
+  --signal-amber: #e8a317; /* solo decorativo (rayas, bordes, fondos) */
+  --signal-amber-dark: #8a5a00; /* ambar para texto y foco: pasa AA sobre claro */
   --signal-amber-bg: #fbf0d6;
   --signal-red: #b3271f;
   --signal-red-bg: #fbe5e3;
@@ -39,10 +39,10 @@
   /* Sombras en capas (color via token para poder ajustarlo en modo oscuro). */
   --shadow-color: 28, 32, 36;
   --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.06);
-  --shadow: 0 1px 2px rgba(var(--shadow-color), 0.06),
-    0 8px 28px -12px rgba(var(--shadow-color), 0.22);
-  --shadow-lg: 0 2px 4px rgba(var(--shadow-color), 0.08),
-    0 24px 60px -24px rgba(var(--shadow-color), 0.4);
+  --shadow:
+    0 1px 2px rgba(var(--shadow-color), 0.06), 0 8px 28px -12px rgba(var(--shadow-color), 0.22);
+  --shadow-lg:
+    0 2px 4px rgba(var(--shadow-color), 0.08), 0 24px 60px -24px rgba(var(--shadow-color), 0.4);
 
   /* Curvas de animacion compartidas */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -64,11 +64,26 @@
   initial-value: 0;
 }
 
-[data-accent='verde']   { --accent: var(--signal-green); --accent-bg: var(--signal-green-bg); }
-[data-accent='ambar']   { --accent: var(--signal-amber-dark); --accent-bg: var(--signal-amber-bg); }
-[data-accent='rojo']    { --accent: var(--signal-red);   --accent-bg: var(--signal-red-bg); }
-[data-accent='azul']    { --accent: var(--signal-blue);  --accent-bg: var(--signal-blue-bg); }
-[data-accent='asfalto'] { --accent: var(--asphalt);      --accent-bg: var(--paper-2); }
+[data-accent='verde'] {
+  --accent: var(--signal-green);
+  --accent-bg: var(--signal-green-bg);
+}
+[data-accent='ambar'] {
+  --accent: var(--signal-amber-dark);
+  --accent-bg: var(--signal-amber-bg);
+}
+[data-accent='rojo'] {
+  --accent: var(--signal-red);
+  --accent-bg: var(--signal-red-bg);
+}
+[data-accent='azul'] {
+  --accent: var(--signal-blue);
+  --accent-bg: var(--signal-blue-bg);
+}
+[data-accent='asfalto'] {
+  --accent: var(--asphalt);
+  --accent-bg: var(--paper-2);
+}
 
 /* ============================================================
    Modo oscuro. Tokens semanticos redefinidos; como los acentos
@@ -152,7 +167,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-display);
   font-weight: 700;
   line-height: 1.05;
@@ -164,9 +182,13 @@ a {
   color: var(--accent);
   text-decoration: none;
 }
-a:hover { text-decoration: underline; }
+a:hover {
+  text-decoration: underline;
+}
 
-p { margin: 0 0 1rem; }
+p {
+  margin: 0 0 1rem;
+}
 
 .container {
   width: 100%;
@@ -179,11 +201,7 @@ p { margin: 0 0 1rem; }
 .road-line {
   height: 6px;
   border-radius: 3px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--signal-amber) 0 28px,
-    transparent 28px 52px
-  );
+  background: repeating-linear-gradient(90deg, var(--signal-amber) 0 28px, transparent 28px 52px);
   opacity: 0.85;
 }
 
@@ -201,23 +219,39 @@ p { margin: 0 0 1rem; }
   border-radius: var(--radius-sm);
   border: 2px solid transparent;
   cursor: pointer;
-  transition: transform 0.16s var(--ease-out), box-shadow 0.16s var(--ease-out),
+  transition:
+    transform 0.16s var(--ease-out),
+    box-shadow 0.16s var(--ease-out),
     background 0.16s var(--ease-out);
   background: var(--accent);
   color: #fff;
 }
-.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-.btn:active { transform: translateY(0) scale(0.98); }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
 
 .btn--ghost {
   background: transparent;
   color: var(--ink);
   border-color: var(--line);
 }
-.btn--ghost:hover { background: var(--card); }
+.btn--ghost:hover {
+  background: var(--card);
+}
 
-.btn--dark { background: var(--asphalt); }
+.btn--dark {
+  background: var(--asphalt);
+}
 
 /* Etiquetas */
 .tag {
@@ -237,8 +271,10 @@ p { margin: 0 0 1rem; }
 
 .visually-hidden {
   position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
@@ -268,12 +304,24 @@ p { margin: 0 0 1rem; }
   .reveal {
     animation: reveal-in 0.55s var(--ease-out) both;
   }
-  .reveal:nth-child(2) { animation-delay: 0.05s; }
-  .reveal:nth-child(3) { animation-delay: 0.1s; }
-  .reveal:nth-child(4) { animation-delay: 0.15s; }
-  .reveal:nth-child(5) { animation-delay: 0.2s; }
-  .reveal:nth-child(6) { animation-delay: 0.25s; }
-  .reveal:nth-child(7) { animation-delay: 0.3s; }
+  .reveal:nth-child(2) {
+    animation-delay: 0.05s;
+  }
+  .reveal:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+  .reveal:nth-child(4) {
+    animation-delay: 0.15s;
+  }
+  .reveal:nth-child(5) {
+    animation-delay: 0.2s;
+  }
+  .reveal:nth-child(6) {
+    animation-delay: 0.25s;
+  }
+  .reveal:nth-child(7) {
+    animation-delay: 0.3s;
+  }
 }
 /* Solo opacidad (sin translateY): un fundido no desplaza el layout, asi que no
    puede mover el footer ni inducir saltos de scroll en movil. */
@@ -289,12 +337,16 @@ p { margin: 0 0 1rem; }
 :root[data-theme] body,
 :root[data-theme] .site-header,
 :root[data-theme] .site-footer {
-  transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out),
+  transition:
+    background-color 0.35s var(--ease-out),
+    color 0.35s var(--ease-out),
     border-color 0.35s var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
