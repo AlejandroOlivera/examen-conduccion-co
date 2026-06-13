@@ -11,7 +11,21 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "validate": "pnpm run check && pnpm run lint && pnpm run format:check && pnpm run test",
+    "og": "node scripts/og.mjs",
+    "astro": "astro",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,astro,js,mjs}": "eslint --fix",
+    "*.{ts,astro,js,mjs,json,md,css}": "prettier --write"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -23,11 +37,25 @@
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/overpass": "^5.2.8",
     "@fontsource/barlow-semi-condensed": "^5.2.7",
-    "astro": "^6.4.5"
+    "astro": "^6.4.5",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^4.1.8",
+    "eslint": "^10.5.0",
+    "eslint-plugin-astro": "^1.7.0",
+    "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "prettier": "^3.8.4",
+    "prettier-plugin-astro": "^0.14.1",
     "sharp": "^0.35.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0",
+    "vitest": "^4.1.8"
   }
 }

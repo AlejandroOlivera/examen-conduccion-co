@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancela ejecuciones anteriores del mismo ref si llega un push nuevo.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verificacion (typecheck, lint, format, test, build)
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: '0' # no instalar hooks de git en CI
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check (astro check)
+        run: pnpm run check
+
+      - name: Lint (eslint)
+        run: pnpm run lint
+
+      - name: Formato (prettier --check)
+        run: pnpm run format:check
+
+      - name: Tests (vitest) + validacion del banco
+        run: pnpm run test
+
+      - name: Build de produccion
+        run: pnpm run build

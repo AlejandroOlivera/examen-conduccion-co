@@ -1,0 +1,10 @@
+# Generado / dependencias
+dist/
+.astro/
+coverage/
+node_modules/
+pnpm-lock.yaml
+
+# Binarios / assets
+public/og.png
+public/favicon.svg

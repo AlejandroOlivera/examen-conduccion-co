@@ -181,8 +181,7 @@ export const QUESTIONS: readonly Question[] = [
       'Mirando el tablero, nunca con la varilla',
     ],
     answer: 1,
-    explanation:
-      'En plano y con el motor en reposo la lectura de la varilla es confiable.',
+    explanation: 'En plano y con el motor en reposo la lectura de la varilla es confiable.',
   },
   {
     id: 'g1-14',
@@ -223,8 +222,7 @@ export const QUESTIONS: readonly Question[] = [
       'Reemplazar la funcion del pedal del embrague al arrancar',
     ],
     answer: 1,
-    explanation:
-      'Mantiene el vehiculo inmovil al estacionar y asiste el arranque en pendiente.',
+    explanation: 'Mantiene el vehiculo inmovil al estacionar y asiste el arranque en pendiente.',
   },
   {
     id: 'g1-17',
@@ -267,8 +265,7 @@ export const QUESTIONS: readonly Question[] = [
       'Cualquier escuela de manejo que cuente con instructores certificados y pista propia',
     ],
     answer: 1,
-    explanation:
-      'El certificado de aptitud lo expide un CRC habilitado y registrado en el RUNT.',
+    explanation: 'El certificado de aptitud lo expide un CRC habilitado y registrado en el RUNT.',
   },
   {
     id: 'g1-20',
@@ -281,8 +278,7 @@ export const QUESTIONS: readonly Question[] = [
       'Un Centro de Apoyo Logistico de Evaluacion (CALE) habilitado por el Ministerio',
     ],
     answer: 1,
-    explanation:
-      'Los CEA imparten la formacion; los CALE evaluan; el CRC certifica aptitud.',
+    explanation: 'Los CEA imparten la formacion; los CALE evaluan; el CRC certifica aptitud.',
   },
 
   // ───────────────────────── GRUPO II ─────────────────────────
@@ -353,8 +349,7 @@ export const QUESTIONS: readonly Question[] = [
       'Es opcional cuando hay buena visibilidad y los demas conductores pueden anticipar la maniobra',
     ],
     answer: 1,
-    explanation:
-      'Anunciar la maniobra con direccionales previene siniestros y es obligatorio.',
+    explanation: 'Anunciar la maniobra con direccionales previene siniestros y es obligatorio.',
   },
   {
     id: 'g2-06',
@@ -367,8 +362,7 @@ export const QUESTIONS: readonly Question[] = [
       'Los carros particulares de mayor cilindraje',
     ],
     answer: 2,
-    explanation:
-      'Los vehiculos de emergencia en servicio tienen prioridad sobre todos los demas.',
+    explanation: 'Los vehiculos de emergencia en servicio tienen prioridad sobre todos los demas.',
   },
   {
     id: 'g2-07',
@@ -479,8 +473,7 @@ export const QUESTIONS: readonly Question[] = [
       'Tratarlo exactamente igual que un semaforo en rojo fijo',
     ],
     answer: 1,
-    explanation:
-      'El amarillo intermitente significa precaucion: reducir y avanzar verificando.',
+    explanation: 'El amarillo intermitente significa precaucion: reducir y avanzar verificando.',
   },
   {
     id: 'g2-15',
@@ -493,8 +486,7 @@ export const QUESTIONS: readonly Question[] = [
       'Ignorarlo si no hay otros carros',
     ],
     answer: 1,
-    explanation:
-      'El rojo intermitente equivale a la senal PARE: alto total y ceder el paso.',
+    explanation: 'El rojo intermitente equivale a la senal PARE: alto total y ceder el paso.',
   },
   {
     id: 'g2-16',
@@ -521,8 +513,7 @@ export const QUESTIONS: readonly Question[] = [
       'Tocarle bocina',
     ],
     answer: 1,
-    explanation:
-      'Se cede el paso a la emergencia; seguirla "colado" es peligroso e infractor.',
+    explanation: 'Se cede el paso a la emergencia; seguirla "colado" es peligroso e infractor.',
   },
   {
     id: 'g2-18',
@@ -535,8 +526,7 @@ export const QUESTIONS: readonly Question[] = [
       'Reclamar al peaton que cruza por fuera de la cebra',
     ],
     answer: 2,
-    explanation:
-      'La bocina es un elemento de seguridad, no de presion ni saludo.',
+    explanation: 'La bocina es un elemento de seguridad, no de presion ni saludo.',
   },
   {
     id: 'g2-19',
@@ -549,8 +539,7 @@ export const QUESTIONS: readonly Question[] = [
       'Bajar el vidrio y subir el volumen',
     ],
     answer: 2,
-    explanation:
-      'La fatiga reduce reflejos como el alcohol; lo seguro es detenerse y descansar.',
+    explanation: 'La fatiga reduce reflejos como el alcohol; lo seguro es detenerse y descansar.',
   },
   {
     id: 'g2-20',
@@ -593,8 +582,7 @@ export const QUESTIONS: readonly Question[] = [
       'Cuadrada azul',
     ],
     answer: 1,
-    explanation:
-      'La senal PARE es octagonal roja; obliga a detencion total.',
+    explanation: 'La senal PARE es octagonal roja; obliga a detencion total.',
   },
   {
     id: 'g3-03',
@@ -621,17 +609,20 @@ export const QUESTIONS: readonly Question[] = [
       'Octagonales rojas',
     ],
     answer: 0,
-    explanation:
-      'Las informativas (servicios, destinos) son rectangulares azules o verdes.',
+    explanation: 'Las informativas (servicios, destinos) son rectangulares azules o verdes.',
   },
   {
     id: 'g3-05',
     group: 'III',
     prompt: 'Una senal azul con una "P" blanca indica:',
-    options: ['Prohibido parquear en toda la cuadra', 'Estacionamiento permitido', 'Paradero exclusivo de buses', 'Puesto de control de policia adelante'],
+    options: [
+      'Prohibido parquear en toda la cuadra',
+      'Estacionamiento permitido',
+      'Paradero exclusivo de buses',
+      'Puesto de control de policia adelante',
+    ],
     answer: 1,
-    explanation:
-      'La "P" sobre fondo azul informa zona de estacionamiento permitido.',
+    explanation: 'La "P" sobre fondo azul informa zona de estacionamiento permitido.',
   },
   {
     id: 'g3-06',
@@ -686,8 +677,7 @@ export const QUESTIONS: readonly Question[] = [
       'Cambiar de carril sin reducir la velocidad',
     ],
     answer: 1,
-    explanation:
-      'En la cebra el peaton tiene prioridad; el conductor cede el paso.',
+    explanation: 'En la cebra el peaton tiene prioridad; el conductor cede el paso.',
   },
   {
     id: 'g3-10',
@@ -714,8 +704,7 @@ export const QUESTIONS: readonly Question[] = [
       'Detenerse',
     ],
     answer: 1,
-    explanation:
-      'El verde habilita el paso, pero siempre cediendo a quien aun ocupa el cruce.',
+    explanation: 'El verde habilita el paso, pero siempre cediendo a quien aun ocupa el cruce.',
   },
   {
     id: 'g3-12',
@@ -728,17 +717,20 @@ export const QUESTIONS: readonly Question[] = [
       'Es ignorable',
     ],
     answer: 1,
-    explanation:
-      'El amarillo anuncia el rojo: si se puede detener con seguridad, hay que hacerlo.',
+    explanation: 'El amarillo anuncia el rojo: si se puede detener con seguridad, hay que hacerlo.',
   },
   {
     id: 'g3-13',
     group: 'III',
     prompt: 'Un agente de transito con la mano levantada hacia arriba indica:',
-    options: ['Continuar la marcha sin detenerse', 'Alto / detenerse', 'Girar a la derecha', 'Adelantar al vehiculo de adelante'],
+    options: [
+      'Continuar la marcha sin detenerse',
+      'Alto / detenerse',
+      'Girar a la derecha',
+      'Adelantar al vehiculo de adelante',
+    ],
     answer: 1,
-    explanation:
-      'Las senales del agente priman sobre el semaforo; mano arriba significa alto.',
+    explanation: 'Las senales del agente priman sobre el semaforo; mano arriba significa alto.',
   },
   {
     id: 'g3-14',
@@ -765,13 +757,13 @@ export const QUESTIONS: readonly Question[] = [
       'Estacionar libremente',
     ],
     answer: 1,
-    explanation:
-      'La Ley 2251/2022 fija 30 km/h en zonas escolares y residenciales.',
+    explanation: 'La Ley 2251/2022 fija 30 km/h en zonas escolares y residenciales.',
   },
   {
     id: 'g3-16',
     group: 'III',
-    prompt: 'Una senal de PARE complementada con "via principal" indica que el conductor de la via secundaria debe:',
+    prompt:
+      'Una senal de PARE complementada con "via principal" indica que el conductor de la via secundaria debe:',
     options: [
       'Detenerse completamente y ceder el paso',
       'Solo reducir la velocidad, sin necesidad de detenerse del todo',
@@ -793,8 +785,7 @@ export const QUESTIONS: readonly Question[] = [
       'Estacionarse encima del paso',
     ],
     answer: 1,
-    explanation:
-      'El tren no puede frenar a tiempo; hay que cruzar solo con plena seguridad.',
+    explanation: 'El tren no puede frenar a tiempo; hay que cruzar solo con plena seguridad.',
   },
   {
     id: 'g3-18',
@@ -816,8 +807,7 @@ export const QUESTIONS: readonly Question[] = [
     prompt: 'En vias de doble calzada sin pasos peatonales, la velocidad maxima es:',
     options: ['80 km/h', '90 km/h, como en las demas carreteras nacionales', '120 km/h', '60 km/h'],
     answer: 2,
-    explanation:
-      'La Ley 2251/2022 permite hasta 120 km/h en doble calzada sin pasos peatonales.',
+    explanation: 'La Ley 2251/2022 permite hasta 120 km/h en doble calzada sin pasos peatonales.',
   },
   {
     id: 'g3-20',
@@ -875,13 +865,13 @@ export const QUESTIONS: readonly Question[] = [
       'Suspension de la licencia por solo 1 mes, sin multa ni inmovilizacion, como medida pedagogica transitoria',
     ],
     answer: 1,
-    explanation:
-      'Paragrafo 3 del Art. 152 CNTT: negarse o huir acarrea las sanciones mas severas.',
+    explanation: 'Paragrafo 3 del Art. 152 CNTT: negarse o huir acarrea las sanciones mas severas.',
   },
   {
     id: 'g4-04',
     group: 'IV',
-    prompt: 'Para conductores de servicio publico, transporte escolar e instructores, las sanciones por alcoholemia:',
+    prompt:
+      'Para conductores de servicio publico, transporte escolar e instructores, las sanciones por alcoholemia:',
     options: [
       'Son exactamente iguales a las de los conductores particulares, sin agravante alguno',
       'Se duplican en multa y periodo de suspension',
@@ -898,8 +888,7 @@ export const QUESTIONS: readonly Question[] = [
     prompt: 'Excederse del limite de velocidad permitido corresponde a una infraccion tipo:',
     options: ['A (leve)', 'C (grave)', 'F (alcoholemia)', 'Ninguna'],
     answer: 1,
-    explanation:
-      'El exceso de velocidad esta tipificado como infraccion C (grave) en el CNTT.',
+    explanation: 'El exceso de velocidad esta tipificado como infraccion C (grave) en el CNTT.',
   },
   {
     id: 'g4-06',
@@ -912,8 +901,7 @@ export const QUESTIONS: readonly Question[] = [
       'Un curso pedagogico opcional ofrecido por el organismo de transito',
     ],
     answer: 1,
-    explanation:
-      'Conducir sin licencia (o con licencia vencida) implica multa e inmovilizacion.',
+    explanation: 'Conducir sin licencia (o con licencia vencida) implica multa e inmovilizacion.',
   },
   {
     id: 'g4-07',
@@ -926,8 +914,7 @@ export const QUESTIONS: readonly Question[] = [
       'Suspension de la licencia por 10 anios y retencion definitiva de las placas del vehiculo',
     ],
     answer: 1,
-    explanation:
-      'El SOAT es obligatorio; circular sin el genera multa e inmovilizacion.',
+    explanation: 'El SOAT es obligatorio; circular sin el genera multa e inmovilizacion.',
   },
   {
     id: 'g4-08',
@@ -954,8 +941,7 @@ export const QUESTIONS: readonly Question[] = [
       'Un comparendo automatico',
     ],
     answer: 1,
-    explanation:
-      'Cada municipio define su pico y placa segun sus necesidades de movilidad.',
+    explanation: 'Cada municipio define su pico y placa segun sus necesidades de movilidad.',
   },
   {
     id: 'g4-10',
@@ -974,7 +960,8 @@ export const QUESTIONS: readonly Question[] = [
   {
     id: 'g4-11',
     group: 'IV',
-    prompt: 'La revision tecnico-mecanica (RTM) para vehiculos particulares de servicio diferente al publico:',
+    prompt:
+      'La revision tecnico-mecanica (RTM) para vehiculos particulares de servicio diferente al publico:',
     options: [
       'No es obligatoria',
       'Es obligatoria a partir del 6.o anio contado desde la matricula y luego cada anio',
@@ -996,8 +983,7 @@ export const QUESTIONS: readonly Question[] = [
       'Galones de gasolina',
     ],
     answer: 1,
-    explanation:
-      'El CNTT expresa las multas en SMDLV; recientemente tambien en UVB.',
+    explanation: 'El CNTT expresa las multas en SMDLV; recientemente tambien en UVB.',
   },
   {
     id: 'g4-13',
@@ -1024,8 +1010,7 @@ export const QUESTIONS: readonly Question[] = [
       'La asistencia a un curso de manejo, sin multa ni grua',
     ],
     answer: 1,
-    explanation:
-      'Estacionar mal genera multa y, si obstruye, inmovilizacion por grua.',
+    explanation: 'Estacionar mal genera multa y, si obstruye, inmovilizacion por grua.',
   },
   {
     id: 'g4-15',
@@ -1052,8 +1037,7 @@ export const QUESTIONS: readonly Question[] = [
       'Solo aplica a taxis',
     ],
     answer: 1,
-    explanation:
-      'Es infraccion no usar la silla o sistema de retencion adecuado para el menor.',
+    explanation: 'Es infraccion no usar la silla o sistema de retencion adecuado para el menor.',
   },
   {
     id: 'g4-17',
@@ -1066,8 +1050,7 @@ export const QUESTIONS: readonly Question[] = [
       'Nunca',
     ],
     answer: 1,
-    explanation:
-      'La retencion preventiva esta reglada; procede, entre otros, ante alcoholemia.',
+    explanation: 'La retencion preventiva esta reglada; procede, entre otros, ante alcoholemia.',
   },
   {
     id: 'g4-18',
@@ -1166,13 +1149,13 @@ export const QUESTIONS: readonly Question[] = [
       'No tiene ningun efecto sobre el desgaste de las piezas',
     ],
     answer: 1,
-    explanation:
-      'Apoyar el pie en el embrague (clutch resting) desgasta el collarin y el plato.',
+    explanation: 'Apoyar el pie en el embrague (clutch resting) desgasta el collarin y el plato.',
   },
   {
     id: 'mec-05',
     group: 'mecanico',
-    prompt: 'Para detenerte por completo en un semaforo en rojo conduciendo un mecanico, lo correcto es:',
+    prompt:
+      'Para detenerte por completo en un semaforo en rojo conduciendo un mecanico, lo correcto es:',
     options: [
       'Dejarlo con una marcha alta engranada sin pisar ningun pedal',
       'Pisar embrague y freno, poner neutro, mantener el freno y soltar el embrague mientras esperas',
@@ -1180,8 +1163,7 @@ export const QUESTIONS: readonly Question[] = [
       'Solo pisar el freno con la marcha puesta y el motor exigido a altas revoluciones hasta que cambie la luz',
     ],
     answer: 1,
-    explanation:
-      'Neutro + freno evita calar el motor y descansa el embrague durante la espera.',
+    explanation: 'Neutro + freno evita calar el motor y descansa el embrague durante la espera.',
   },
   {
     id: 'mec-06',
@@ -1260,7 +1242,8 @@ export const QUESTIONS: readonly Question[] = [
   {
     id: 'caso-03',
     group: 'casos',
-    prompt: 'Conduces en carretera nacional (90 km/h max) y empieza a llover fuerte. Lo correcto es:',
+    prompt:
+      'Conduces en carretera nacional (90 km/h max) y empieza a llover fuerte. Lo correcto es:',
     options: [
       'Mantener los 90 km/h, pues es la velocidad maxima permitida en esa via',
       'Reducir a 60-70 km/h, encender luces bajas, aumentar la distancia y evitar frenadas bruscas',
@@ -1289,11 +1272,16 @@ export const QUESTIONS: readonly Question[] = [
   {
     id: 'caso-05',
     group: 'casos',
-    prompt: 'Entras a una glorieta al mismo tiempo que otro carro que ya viene circulando dentro. La prioridad es de:',
-    options: ['Ti, por entrar primero: quien llega antes a la glorieta tiene prelacion', 'El vehiculo que ya esta dentro de la glorieta', 'El de mayor tamanio, porque necesita mas espacio para maniobrar', 'El que viene por la izquierda, como en una interseccion sin senales'],
+    prompt:
+      'Entras a una glorieta al mismo tiempo que otro carro que ya viene circulando dentro. La prioridad es de:',
+    options: [
+      'Ti, por entrar primero: quien llega antes a la glorieta tiene prelacion',
+      'El vehiculo que ya esta dentro de la glorieta',
+      'El de mayor tamanio, porque necesita mas espacio para maniobrar',
+      'El que viene por la izquierda, como en una interseccion sin senales',
+    ],
     answer: 1,
-    explanation:
-      'En glorieta cede quien entra; la prioridad la tiene quien ya circula dentro.',
+    explanation: 'En glorieta cede quien entra; la prioridad la tiene quien ya circula dentro.',
   },
   {
     id: 'caso-06',
@@ -1321,14 +1309,12 @@ export const QUESTIONS: readonly Question[] = [
       'Acordar con el otro conductor cambiar las versiones de lo sucedido para cobrarle todo al seguro',
     ],
     answer: 1,
-    explanation:
-      'Aun sin heridos hay que documentar y reportar; huir constituye infraccion.',
+    explanation: 'Aun sin heridos hay que documentar y reportar; huir constituye infraccion.',
   },
   {
     id: 'caso-08',
     group: 'casos',
-    prompt:
-      'Te detienen en un reten y tu licencia esta vencida desde hace 2 meses. Que procede?',
+    prompt: 'Te detienen en un reten y tu licencia esta vencida desde hace 2 meses. Que procede?',
     options: [
       'Nada, porque la licencia vencida conserva validez hasta 6 meses despues del vencimiento',
       'Es como conducir sin licencia: multa e inmovilizacion; debes renovarla cuanto antes',
