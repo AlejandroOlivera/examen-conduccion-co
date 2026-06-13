@@ -60,6 +60,9 @@ const { backHref, backLabel = 'Volver al inicio' } = Astro.props;
     position: sticky;
     top: 0;
     z-index: 30;
+    /* Con viewport-fit=cover, el asfalto cubre la zona del notch y el contenido
+       se mantiene por debajo de la barra de estado. */
+    padding-top: env(safe-area-inset-top, 0px);
   }
   .bar {
     display: flex;
