@@ -80,12 +80,21 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-export function initQuiz(root: HTMLElement): void {
+/**
+ * Monta el quiz dentro de `root` y devuelve una funcion de limpieza.
+ * Con ViewTransitions la pagina no se descarga al navegar, asi que los
+ * listeners globales (teclado, beforeunload) y el cronometro deben poder
+ * desmontarse para no apilarse entre visitas: por eso el AbortController.
+ */
+export function initQuiz(root: HTMLElement): () => void {
+  const controller = new AbortController();
+  const { signal } = controller;
+
   const dataNode = root.querySelector<HTMLScriptElement>('script[type="application/json"]');
   const configRaw = root.dataset.config;
   if (!dataNode || !configRaw) {
     root.textContent = 'No se pudieron cargar las preguntas.';
-    return;
+    return () => controller.abort();
   }
 
   const config: QuizConfig = JSON.parse(configRaw);
@@ -93,7 +102,7 @@ export function initQuiz(root: HTMLElement): void {
 
   if (pool.length === 0) {
     root.textContent = 'No hay preguntas disponibles para este modo.';
-    return;
+    return () => controller.abort();
   }
 
   let selected = shuffle(pool);
@@ -189,6 +198,9 @@ export function initQuiz(root: HTMLElement): void {
     if (!q) return;
     const total = state.questions.length;
     const answered = state.answers[state.index];
+    // Solo se anima la entrada al cambiar de pregunta (focus 'prompt'/'none'),
+    // no en los re-render de la misma pregunta para mostrar feedback.
+    const enter = focus === 'none' || focus === 'prompt';
 
     // Barra superior: progreso + (cronometro)
     const top = el('div', { class: 'quiz__top' });
@@ -216,12 +228,18 @@ export function initQuiz(root: HTMLElement): void {
 
     // Enunciado: encabezado real (navegable por SR) y destino de foco.
     // tabIndex -1: enfocable solo por script, nunca entra al orden de Tab.
-    const prompt = el('h2', { class: 'quiz__prompt' }, [q.prompt]);
+    const prompt = el('h2', { class: enter ? 'quiz__prompt is-enter' : 'quiz__prompt' }, [
+      q.prompt,
+    ]);
     prompt.tabIndex = -1;
     stage.append(prompt);
 
     // Opciones (grupo de botones)
-    const list = el('div', { class: 'quiz__options', role: 'group', 'aria-label': 'Opciones' });
+    const list = el('div', {
+      class: enter ? 'quiz__options is-enter' : 'quiz__options',
+      role: 'group',
+      'aria-label': 'Opciones',
+    });
     const showFeedback = config.immediateFeedback && answered !== null;
 
     q.options.forEach((opt, i) => {
@@ -400,9 +418,30 @@ export function initQuiz(root: HTMLElement): void {
     const ring = el('div', {
       class: `result__ring ${passed === null ? '' : passed ? 'is-pass' : 'is-fail'}`,
     });
-    ring.style.setProperty('--pct', String(pct));
-    ring.append(el('span', { class: 'result__pct' }, [`${pct}%`]));
+    const pctLabel = el('span', { class: 'result__pct' }, [`${pct}%`]);
+    ring.append(pctLabel);
     head.append(ring);
+
+    // Anima el relleno del anillo (var --pct, transicionable via @property) y
+    // la cuenta del numero. Bajo reduced-motion se fija el valor final.
+    if (reducedMotion()) {
+      ring.style.setProperty('--pct', String(pct));
+    } else {
+      ring.style.setProperty('--pct', '0');
+      pctLabel.textContent = '0%';
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => ring.style.setProperty('--pct', String(pct))),
+      );
+      const start = performance.now();
+      const dur = 850;
+      const step = (now: number): void => {
+        const t = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3);
+        pctLabel.textContent = `${Math.round(eased * pct)}%`;
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
 
     const info = el('div', { class: 'result__info' });
     const title = el('h2', {}, ['Resultado']);
@@ -509,16 +548,23 @@ export function initQuiz(root: HTMLElement): void {
       const next = stage.querySelector<HTMLButtonElement>('.quiz__nav-right .btn:not(:disabled)');
       if (next) next.click();
     }
-  });
+  }, { signal });
 
   // Evita perder un intento en curso al recargar o cerrar por accidente.
   window.addEventListener('beforeunload', (ev) => {
     const started = state.answers.some((a) => a !== null);
     if (!started || state.finished) return;
     ev.preventDefault();
-  });
+  }, { signal });
 
   // Arranque
   renderQuestion('none');
   if (state.remaining !== null) startTimer();
+
+  // Limpieza: corta los listeners globales y detiene el cronometro. La invoca
+  // [modo].astro en astro:before-swap antes de navegar a otra pagina.
+  return () => {
+    controller.abort();
+    clearTimer();
+  };
 }

@@ -36,14 +36,32 @@
   /* Geometria */
   --radius: 14px;
   --radius-sm: 9px;
-  --shadow: 0 1px 2px rgba(28, 32, 36, 0.06), 0 8px 28px -12px rgba(28, 32, 36, 0.22);
-  --shadow-lg: 0 24px 60px -24px rgba(28, 32, 36, 0.4);
+  /* Sombras en capas (color via token para poder ajustarlo en modo oscuro). */
+  --shadow-color: 28, 32, 36;
+  --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.06);
+  --shadow: 0 1px 2px rgba(var(--shadow-color), 0.06),
+    0 8px 28px -12px rgba(var(--shadow-color), 0.22);
+  --shadow-lg: 0 2px 4px rgba(var(--shadow-color), 0.08),
+    0 24px 60px -24px rgba(var(--shadow-color), 0.4);
+
+  /* Curvas de animacion compartidas */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Tipografia */
   --font-display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
-  --font-body: 'Overpass', system-ui, sans-serif;
+  --font-body: 'Overpass Variable', 'Overpass', system-ui, sans-serif;
 
   --maxw: 1080px;
+
+  color-scheme: light;
+}
+
+/* Propiedad tipada: permite transicionar el relleno del anillo de resultado
+   (conic-gradient) y cualquier otro uso numerico animado. */
+@property --pct {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
 }
 
 [data-accent='verde']   { --accent: var(--signal-green); --accent-bg: var(--signal-green-bg); }
@@ -51,6 +69,52 @@
 [data-accent='rojo']    { --accent: var(--signal-red);   --accent-bg: var(--signal-red-bg); }
 [data-accent='azul']    { --accent: var(--signal-blue);  --accent-bg: var(--signal-blue-bg); }
 [data-accent='asfalto'] { --accent: var(--asphalt);      --accent-bg: var(--paper-2); }
+
+/* ============================================================
+   Modo oscuro. Tokens semanticos redefinidos; como los acentos
+   por modo apuntan a las variables de senal, basta con ajustar
+   estas para que todo el sistema siga al tema. Un script inline en
+   el <head> resuelve la preferencia (guardada o del sistema) y fija
+   data-theme en <html> antes del primer paint, evitando FOUC.
+   ============================================================ */
+:root[data-theme='dark'] {
+  /* Superficies */
+  --paper: #14171a;
+  --paper-2: #1b2024;
+  --card: #20262b;
+  --asphalt: #0e1114;
+  --asphalt-2: #20262b;
+  --line: #333b42;
+
+  /* Tinta */
+  --ink: #e9e7e1;
+  --ink-soft: #b3bac1;
+  --ink-faint: #8d949c;
+
+  /* Senales: variantes mas luminosas para contraste AA sobre fondo oscuro */
+  --signal-green: #4cc173;
+  --signal-green-bg: rgba(76, 193, 115, 0.14);
+  --signal-amber: #f0b429;
+  --signal-amber-dark: #f0c043; /* ambar de texto/foco: AA sobre oscuro */
+  --signal-amber-bg: rgba(240, 180, 41, 0.14);
+  --signal-red: #f0635c;
+  --signal-red-bg: rgba(240, 99, 92, 0.15);
+  --signal-blue: #6aa9e0;
+  --signal-blue-bg: rgba(106, 169, 224, 0.15);
+
+  /* Sombras mas profundas (negro puro) sobre fondo oscuro */
+  --shadow-color: 0, 0, 0;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.35), 0 28px 64px -24px rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}
+
+/* El asfalto como acento se vuelve invisible en oscuro: usar tinta clara. */
+:root[data-theme='dark'] [data-accent='asfalto'] {
+  --accent: #c7ced6;
+  --accent-bg: var(--paper-2);
+}
 
 *,
 *::before,
@@ -61,6 +125,10 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* El header y el footer son asfalto: pintar el html del mismo color evita
+     una banda clara al hacer overscroll en movil (la "safe area" que se ve
+     bajo el footer cuando se colapsa la barra del navegador). */
+  background-color: var(--asphalt);
 }
 
 body {
@@ -68,10 +136,11 @@ body {
   font-family: var(--font-body);
   color: var(--ink);
   background-color: var(--paper);
+  /* Sin background-attachment: fixed: en movil provoca repintados y saltos
+     al scrollear. El degradado ambiental va anclado al cuerpo. */
   background-image:
     radial-gradient(circle at 100% 0, rgba(43, 108, 176, 0.06), transparent 38%),
     radial-gradient(circle at 0 100%, rgba(31, 138, 76, 0.05), transparent 40%);
-  background-attachment: fixed;
   line-height: 1.55;
   font-size: 17px;
   -webkit-font-smoothing: antialiased;
@@ -126,12 +195,13 @@ p { margin: 0 0 1rem; }
   border-radius: var(--radius-sm);
   border: 2px solid transparent;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  transition: transform 0.16s var(--ease-out), box-shadow 0.16s var(--ease-out),
+    background 0.16s var(--ease-out);
   background: var(--accent);
   color: #fff;
 }
-.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
-.btn:active { transform: translateY(0); }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:active { transform: translateY(0) scale(0.98); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
 
 .btn--ghost {
@@ -179,6 +249,37 @@ p { margin: 0 0 1rem; }
 :target,
 :focus {
   scroll-margin-top: 90px;
+}
+
+/* ---------- Revelado al hacer scroll ----------
+   Un IntersectionObserver (ver BaseLayout) marca cada elemento .reveal con
+   .is-visible al entrar en pantalla, una sola vez. Frente a las animaciones
+   impulsadas por scroll, esto no salta en movil al colapsarse la barra del
+   navegador y siempre completa la transicion.
+   El estado oculto se aplica SOLO con JS activo (clase .js en <html>, fijada
+   antes del primer paint) y sin reduced-motion: asi nunca se oculta contenido
+   a usuarios sin JS ni a quienes pidan menos movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  :root.js .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    will-change: opacity, transform;
+  }
+  :root.js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Transicion suave de colores al alternar el tema (no en la primera carga:
+   el script fija data-theme antes del paint, y el reset de abajo la anula
+   bajo reduced-motion). */
+:root[data-theme] body,
+:root[data-theme] .site-header,
+:root[data-theme] .site-footer {
+  transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {

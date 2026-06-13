@@ -87,8 +87,26 @@ const payloadJson = JSON.stringify(payload)
 
 <script>
   import { initQuiz } from '../../scripts/quiz';
-  const root = document.getElementById('quiz-root');
-  if (root) initQuiz(root);
+
+  // Con ViewTransitions la pagina no se recarga al navegar: montamos en
+  // astro:page-load (dispara en la carga inicial y tras cada navegacion) y
+  // desmontamos en astro:before-swap para no arrastrar listeners ni el
+  // cronometro del examen anterior.
+  let teardown: (() => void) | null = null;
+
+  function mount() {
+    if (teardown) return; // ya montado
+    const root = document.getElementById('quiz-root');
+    if (root) teardown = initQuiz(root);
+  }
+
+  function unmount() {
+    teardown?.();
+    teardown = null;
+  }
+
+  document.addEventListener('astro:page-load', mount);
+  document.addEventListener('astro:before-swap', unmount);
 </script>
 
 <style>
@@ -221,6 +239,29 @@ const payloadJson = JSON.stringify(payload)
     color: var(--ink);
     margin-bottom: 1.2rem;
   }
+  /* Entrada sutil solo al cambiar de pregunta (clase is-enter, no en el
+     re-render de feedback). Se anula bajo prefers-reduced-motion. */
+  .quiz__prompt.is-enter {
+    animation: q-in 0.34s var(--ease-out) both;
+  }
+  .quiz__options.is-enter .opt {
+    animation: q-in 0.34s var(--ease-out) both;
+  }
+  .quiz__options.is-enter .opt:nth-child(2) {
+    animation-delay: 0.04s;
+  }
+  .quiz__options.is-enter .opt:nth-child(3) {
+    animation-delay: 0.08s;
+  }
+  .quiz__options.is-enter .opt:nth-child(4) {
+    animation-delay: 0.12s;
+  }
+  @keyframes q-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
   .quiz__options {
     display: grid;
     gap: 0.7rem;
@@ -273,6 +314,30 @@ const payloadJson = JSON.stringify(payload)
     background: var(--accent);
     color: #fff;
     border-color: var(--accent);
+  }
+  .opt.is-correct,
+  .opt.is-wrong {
+    animation: opt-pop 0.34s var(--ease-out);
+  }
+  @keyframes opt-pop {
+    0% {
+      transform: scale(1);
+    }
+    45% {
+      transform: scale(1.018);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .opt__mark {
+    animation: mark-in 0.3s var(--ease-out) both;
+  }
+  @keyframes mark-in {
+    from {
+      opacity: 0;
+      transform: scale(0.4);
+    }
   }
   .opt.is-correct {
     border-color: var(--signal-green);
@@ -361,6 +426,8 @@ const payloadJson = JSON.stringify(payload)
     background:
       conic-gradient(var(--accent) calc(var(--pct) * 1%), var(--paper-2) 0);
     flex: none;
+    /* --pct es transicionable gracias a @property (global.css). */
+    transition: --pct 0.85s var(--ease-out);
   }
   .result__ring.is-pass {
     background: conic-gradient(var(--signal-green) calc(var(--pct) * 1%), var(--paper-2) 0);
