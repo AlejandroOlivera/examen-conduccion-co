@@ -80,7 +80,11 @@ const GITHUB = 'https://github.com/AlejandroOlivera';
     color: #c2c8cf;
   }
   .inner {
-    padding-block: 2.25rem 2.5rem;
+    /* Holgura inferior generosa + safe-area de iOS: asegura que la ultima
+       linea del footer (autoria) despeje la barra dinamica de Safari y el
+       home indicator, para poder llegar al final sin que quede tapada. */
+    padding-block: 2.25rem;
+    padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2rem));
   }
 
   .cols {

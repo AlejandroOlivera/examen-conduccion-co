@@ -129,6 +129,9 @@ html {
      una banda clara al hacer overscroll en movil (la "safe area" que se ve
      bajo el footer cuando se colapsa la barra del navegador). */
   background-color: var(--asphalt);
+  /* Frena el rebote elastico del documento en iOS Safari (rubber-band), que
+     hacia "saltar" la pagina al llegar al footer. */
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -136,6 +139,9 @@ body {
   font-family: var(--font-body);
   color: var(--ink);
   background-color: var(--paper);
+  /* En iOS el scroller del documento puede ser html o body; declararlo en
+     ambos asegura que el rebote elastico se frene. */
+  overscroll-behavior-y: none;
   /* Sin background-attachment: fixed: en movil provoca repintados y saltos
      al scrollear. El degradado ambiental va anclado al cuerpo. */
   background-image:
@@ -251,24 +257,29 @@ p { margin: 0 0 1rem; }
   scroll-margin-top: 90px;
 }
 
-/* ---------- Revelado al hacer scroll ----------
-   Un IntersectionObserver (ver BaseLayout) marca cada elemento .reveal con
-   .is-visible al entrar en pantalla, una sola vez. Frente a las animaciones
-   impulsadas por scroll, esto no salta en movil al colapsarse la barra del
-   navegador y siempre completa la transicion.
-   El estado oculto se aplica SOLO con JS activo (clase .js en <html>, fijada
-   antes del primer paint) y sin reduced-motion: asi nunca se oculta contenido
-   a usuarios sin JS ni a quienes pidan menos movimiento. */
+/* ---------- Entrada sutil de bloques ----------
+   Animacion CSS pura, sin JavaScript: con animation-fill-mode: both el
+   elemento parte oculto y SIEMPRE termina visible al completar (~0.6 s). No
+   depende de scroll, observers ni del ciclo de vida de las transiciones, asi
+   que nunca puede quedar una tarjeta invisible. Bajo prefers-reduced-motion no
+   se aplica (el bloque @media no coincide) y los elementos se ven de una.
+   El leve escalonado por posicion da sensacion de cascada al cargar. */
 @media (prefers-reduced-motion: no-preference) {
-  :root.js .reveal {
-    opacity: 0;
-    transform: translateY(22px);
-    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
-    will-change: opacity, transform;
+  .reveal {
+    animation: reveal-in 0.55s var(--ease-out) both;
   }
-  :root.js .reveal.is-visible {
-    opacity: 1;
-    transform: none;
+  .reveal:nth-child(2) { animation-delay: 0.05s; }
+  .reveal:nth-child(3) { animation-delay: 0.1s; }
+  .reveal:nth-child(4) { animation-delay: 0.15s; }
+  .reveal:nth-child(5) { animation-delay: 0.2s; }
+  .reveal:nth-child(6) { animation-delay: 0.25s; }
+  .reveal:nth-child(7) { animation-delay: 0.3s; }
+}
+/* Solo opacidad (sin translateY): un fundido no desplaza el layout, asi que no
+   puede mover el footer ni inducir saltos de scroll en movil. */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
   }
 }
 

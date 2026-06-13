@@ -189,7 +189,8 @@ const payloadJson = JSON.stringify(payload)
     margin-bottom: 0.6rem;
     /* Mantiene contador y cronometro visibles con preguntas largas en movil. */
     position: sticky;
-    top: 72px;
+    /* Sigue al header, que crece con la safe-area del notch (viewport-fit=cover). */
+    top: calc(72px + env(safe-area-inset-top, 0px));
     z-index: 5;
     background: var(--card);
     padding-block: 0.35rem;

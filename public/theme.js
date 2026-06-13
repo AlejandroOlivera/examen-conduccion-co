@@ -7,9 +7,6 @@
   window.__themeInit = true;
 
   var root = document.documentElement;
-  // Marca JS activo antes del primer paint: habilita el estado oculto inicial
-  // del revelado (.js .reveal) sin ocultar contenido a usuarios sin JS.
-  root.classList.add('js');
 
   function resolve() {
     try {
@@ -19,33 +16,43 @@
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
-  function sync() {
-    var dark = root.dataset.theme === 'dark';
+  // Tinta la barra del navegador (iOS Safari/Android) segun el tema: el header
+  // y el footer son asfalto en ambos temas, asi que se usa ese tono.
+  function setMeta(theme) {
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0e1114' : '#1c2024');
+  }
+
+  function syncToggles(theme) {
     var btns = document.querySelectorAll('[data-theme-toggle]');
     for (var i = 0; i < btns.length; i++) {
-      btns[i].setAttribute('aria-pressed', String(dark));
+      btns[i].setAttribute('aria-pressed', String(theme === 'dark'));
     }
   }
 
-  function apply() {
-    root.dataset.theme = resolve();
-    sync();
+  function set(theme) {
+    root.dataset.theme = theme;
+    setMeta(theme);
+    syncToggles(theme);
   }
 
-  apply();
+  set(resolve());
 
   // documentElement persiste entre navegaciones con ViewTransitions, asi que
   // basta registrar estos listeners una sola vez.
-  document.addEventListener('astro:after-swap', apply);
-  document.addEventListener('astro:page-load', sync); // refleja el estado en el toggle ya renderizado
+  document.addEventListener('astro:after-swap', function () {
+    set(resolve());
+  });
+  document.addEventListener('astro:page-load', function () {
+    syncToggles(root.dataset.theme === 'dark' ? 'dark' : 'light');
+  });
   document.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('[data-theme-toggle]');
     if (!btn) return;
     var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
     try {
       localStorage.setItem('theme', next);
     } catch (e2) {}
-    sync();
+    set(next);
   });
 })();
