@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Taller interactivo de preparacion para el examen teorico de conduccion (Licencia B1) en Colombia",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -12,11 +13,21 @@
     "check": "astro check",
     "astro": "astro"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/overpass": "^5.2.8",
+    "@fontsource/barlow-semi-condensed": "^5.2.7",
     "astro": "^6.4.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "sharp": "^0.35.1",
     "typescript": "^6.0.3"
   }
 }

@@ -1,0 +1,34 @@
+# Configuracion de despliegue en Netlify.
+# Sitio estatico (Astro SSG): build con pnpm, publicacion de /dist.
+# Netlify detecta pnpm por pnpm-lock.yaml y el campo packageManager de
+# package.json (via corepack), y respeta pnpm.onlyBuiltDependencies para
+# compilar esbuild/sharp.
+
+[build]
+  command = "pnpm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# ---------- Cabeceras de seguridad (todas las rutas) ----------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+    # CSP pragmatica para un sitio estatico sin backend ni contenido de usuario.
+    # - script-src 'self': los scripts (Astro, ViewTransitions, tema) se sirven
+    #   desde el propio dominio; no hay inline ejecutable.
+    # - style-src 'unsafe-inline': Astro inyecta <style> y el quiz fija estilos
+    #   inline (p. ej. el ancho de la barra de progreso y el anillo de resultado).
+    # - font/img/connect quedan en el propio origen (fuentes self-hosted).
+    Content-Security-Policy = "default-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'"
+
+# ---------- Cache de assets con hash (inmutables) ----------
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
