@@ -19,6 +19,27 @@ if (!mode) {
 
 const questions = questionsForGroups(mode.groups);
 
+// Migas de pan como datos estructurados (Inicio > modo). URLs absolutas.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Inicio',
+      item: new URL('/', Astro.site).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: mode.short,
+      // Con barra final para coincidir exactamente con el canonical.
+      item: new URL(`/examen/${mode.slug}/`, Astro.site).href,
+    },
+  ],
+};
+
 // Configuracion que se entrega a la isla de cliente.
 const config: QuizConfig = {
   mode: mode.slug,
@@ -47,7 +68,7 @@ const payloadJson = JSON.stringify(payload)
   .join(String.fromCharCode(92) + 'u003c');
 ---
 
-<BaseLayout title={`${mode.short} · Taller B1`} description={mode.description}>
+<BaseLayout title={`${mode.short} · Taller B1`} description={mode.description} jsonLd={jsonLd}>
   <SiteHeader slot="header" backHref="/" backLabel="Todos los temas" />
 
   <section class="container head" data-accent={mode.accent}>

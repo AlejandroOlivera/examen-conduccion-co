@@ -8,6 +8,34 @@ import { questionsForGroups, QUESTIONS } from '../data/questions';
 
 const total = QUESTIONS.length;
 
+// Datos estructurados de la home: identidad del sitio (Organization) y el
+// sitio web (WebSite), enlazados por @id. URLs absolutas como el canonical.
+const orgId = new URL('#org', Astro.site).href;
+const homeUrl = new URL('/', Astro.site).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': orgId,
+      name: 'Taller B1',
+      url: homeUrl,
+      logo: new URL('/og.png', Astro.site).href,
+      sameAs: ['https://github.com/AlejandroOlivera'],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': new URL('#website', Astro.site).href,
+      url: homeUrl,
+      name: 'Taller B1',
+      description:
+        'Taller interactivo para preparar el examen teorico de conduccion (Licencia B1) en Colombia, segun la normativa vigente.',
+      inLanguage: 'es-CO',
+      publisher: { '@id': orgId },
+    },
+  ],
+};
+
 // Datos de referencia rapida (limites de velocidad — Ley 2251 de 2022).
 const speeds = [
   { via: 'Zonas escolares y residenciales', max: '30 km/h' },
@@ -18,7 +46,7 @@ const speeds = [
 ];
 ---
 
-<BaseLayout title="Taller B1 · Examen teorico de conduccion (Colombia)">
+<BaseLayout title="Taller B1 · Examen teorico de conduccion (Colombia)" jsonLd={jsonLd}>
   <SiteHeader slot="header" />
 
   <!-- Hero -->

@@ -4,7 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 ---
 
-<BaseLayout title="Pagina no encontrada · Taller B1">
+<BaseLayout title="Pagina no encontrada · Taller B1" noindex={true}>
   <SiteHeader slot="header" backHref="/" />
   <section class="container wrap">
     <span class="code">404</span>
