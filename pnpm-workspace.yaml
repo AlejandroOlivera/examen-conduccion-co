@@ -1,0 +1,7 @@
+# pnpm 11 lee la configuracion desde aqui (ya no desde el campo "pnpm" de
+# package.json). allowBuilds autoriza los scripts de compilacion de estas deps;
+# sin esto pnpm los ignora (ERR_PNPM_IGNORED_BUILDS) y el binario de esbuild
+# que necesita Astro/Vite no se instala.
+allowBuilds:
+  esbuild: true
+  sharp: true
