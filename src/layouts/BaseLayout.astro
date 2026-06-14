@@ -15,18 +15,39 @@ interface Props {
   description?: string;
   /** Ruta de la imagen para compartir (relativa al sitio). */
   ogImage?: string;
+  /** Texto alternativo de la imagen para compartir. */
+  ogImageAlt?: string;
+  /** Si es true, marca la pagina como no indexable (p. ej. el 404). */
+  noindex?: boolean;
+  /** Uno o varios objetos JSON-LD a inyectar como datos estructurados. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
   title,
   description = 'Taller interactivo para preparar el examen teorico de conduccion (Licencia B1) en Colombia, segun la normativa vigente.',
   ogImage = '/og.png',
+  ogImageAlt = 'Taller B1 — Examen teorico de conduccion (Licencia B1) en Colombia',
+  noindex = false,
+  jsonLd,
 } = Astro.props;
 
 // Astro.site se define en astro.config.mjs; con eso construimos URLs absolutas
 // para canonical y Open Graph (necesarias para previews al compartir).
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = new URL(ogImage, Astro.site);
+
+// Normaliza el JSON-LD a lista para renderizar un <script> por objeto.
+const jsonLdItems = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+
+// Serializa escapando el signo "menor que" (charCode 60) como secuencia
+// unicode para que ningun valor pueda cerrar el script. Mismo criterio que
+// el payload del quiz; se evita el caracter literal porque rompe el escaner
+// de dependencias de Vite en dev.
+const ldJson = (obj: Record<string, unknown>) =>
+  JSON.stringify(obj)
+    .split(String.fromCharCode(60))
+    .join(String.fromCharCode(92) + 'u003c');
 ---
 
 <!doctype html>
@@ -46,6 +67,7 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <script is:inline src="/theme.js"></script>
 
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#1c2024" />
     <link rel="canonical" href={canonical} />
@@ -58,6 +80,7 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
@@ -66,6 +89,15 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    <!-- Datos estructurados (JSON-LD). Bloques de tipo no-JS: el navegador no
+         los ejecuta, por eso la CSP script-src 'self' no los bloquea. -->
+    {
+      jsonLdItems.map((item) => (
+        <script type="application/ld+json" is:inline set:html={ldJson(item)} />
+      ))
+    }
 
     <title>{title}</title>
     <ClientRouter />
