@@ -252,6 +252,14 @@ p {
 .btn--dark {
   background: var(--asphalt);
 }
+/* En modo oscuro el asfalto (#0e1114) queda mas oscuro que el fondo y el boton
+   primario del hero ("Hacer el simulacro") casi desaparece. Lo pasamos al
+   acento verde con tinta oscura: recupera afordancia y mantiene contraste AA
+   (verde claro sobre texto asfalto, ~9:1). */
+:root[data-theme='dark'] .btn--dark {
+  background: var(--signal-green);
+  color: var(--asphalt);
+}
 
 /* Etiquetas */
 .tag {
