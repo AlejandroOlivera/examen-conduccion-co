@@ -18,7 +18,7 @@ if (mode.passPercent) meta.push(`Aprueba ${mode.passPercent}%`);
 else meta.push('Practica libre');
 ---
 
-<a class="card reveal" href={`/examen/${mode.slug}`} data-accent={mode.accent}>
+<a class="card reveal" href={`/examen/${mode.category}/${mode.slug}`} data-accent={mode.accent}>
   <div class="card__top">
     <span class="tag">{mode.short}</span>
     {

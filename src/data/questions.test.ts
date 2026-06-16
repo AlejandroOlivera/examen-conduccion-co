@@ -21,18 +21,35 @@ describe('modos de examen', () => {
     }
   });
 
-  it('tienen slugs unicos', () => {
-    const slugs = EXAM_MODES.map((m) => m.slug);
-    expect(new Set(slugs).size).toBe(slugs.length);
+  it('tienen slugs unicos por categoria', () => {
+    const keys = EXAM_MODES.map((m) => `${m.category}/${m.slug}`);
+    expect(new Set(keys).size).toBe(keys.length);
   });
 
-  it('cada modo tiene preguntas y el pool cubre la muestra', () => {
+  it('cada modo tiene al menos una pregunta en su categoria', () => {
+    // El invariante es que ningun modo quede vacio.
     for (const mode of EXAM_MODES) {
-      const pool = questionsForGroups(mode.groups);
+      const pool = questionsForGroups(mode.category, mode.groups);
       expect(pool.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('el pool cubre la muestra fija de cada modo que la define', () => {
+    // Un modo con `sample` fijo (p. ej. el simulacro de carro: 40) debe tener
+    // al menos esas preguntas; si el banco cae por debajo, el examen serviria
+    // menos de las prometidas y este test falla antes de produccion. Los modos
+    // sin `sample` usan todo su pool y no entran en esta comprobacion.
+    for (const mode of EXAM_MODES) {
       if (mode.sample) {
+        const pool = questionsForGroups(mode.category, mode.groups);
         expect(pool.length).toBeGreaterThanOrEqual(mode.sample);
       }
     }
+  });
+
+  it('hay modos para carro y para moto', () => {
+    const cats = new Set(EXAM_MODES.map((m) => m.category));
+    expect(cats.has('carro')).toBe(true);
+    expect(cats.has('moto')).toBe(true);
   });
 });

@@ -10,9 +10,12 @@ import { z } from 'zod';
 
 export const groupIdSchema = z.enum(['I', 'II', 'III', 'IV', 'mecanico', 'casos']);
 
+export const vehicleCategorySchema = z.enum(['carro', 'moto']);
+
 export const questionSchema = z
   .object({
     id: z.string().min(1),
+    category: vehicleCategorySchema,
     group: groupIdSchema,
     prompt: z.string().min(1),
     options: z.array(z.string().min(1)).min(2),
@@ -40,6 +43,7 @@ export const questionBankSchema = z.array(questionSchema).superRefine((questions
 });
 
 export const examModeSchema = z.object({
+  category: vehicleCategorySchema,
   slug: z.string().min(1),
   title: z.string().min(1),
   short: z.string().min(1),

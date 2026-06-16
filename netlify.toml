@@ -11,6 +11,22 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# ---------- Redirects de URLs antiguas (pre multi-categoria) ----------
+# Las rutas pasaron de /examen/<modo> a /examen/<categoria>/<modo>. El
+# placeholder :modo solo captura un segmento, asi que NO afecta a las nuevas
+# /examen/carro/* ni /examen/moto/*. Preserva enlaces externos e indexados.
+# Se cubren ambas formas: el canonical antiguo llevaba barra final
+# (/examen/<modo>/) y tambien deben redirigir los enlaces sin barra.
+[[redirects]]
+  from = "/examen/:modo"
+  to = "/examen/carro/:modo"
+  status = 301
+
+[[redirects]]
+  from = "/examen/:modo/"
+  to = "/examen/carro/:modo/"
+  status = 301
+
 # ---------- Cabeceras de seguridad (todas las rutas) ----------
 [[headers]]
   for = "/*"

@@ -3,10 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ModeCard from '../components/ModeCard.astro';
-import { EXAM_MODES } from '../data/modes';
+import { modesForCategory } from '../data/modes';
 import { questionsForGroups, QUESTIONS } from '../data/questions';
+import { DEFAULT_CATEGORY } from '../data/category';
 
-const total = QUESTIONS.length;
+// El hero es de carro (Licencia B1): cuenta solo las preguntas de esa categoria.
+const total = QUESTIONS.filter((q) => q.category === DEFAULT_CATEGORY).length;
 
 // Datos estructurados de la home: identidad del sitio (Organization) y el
 // sitio web (WebSite), enlazados por @id. URLs absolutas como el canonical.
@@ -47,6 +49,10 @@ const speeds = [
 ---
 
 <BaseLayout title="Taller B1 · Examen teorico de conduccion (Colombia)" jsonLd={jsonLd}>
+  <!-- Render-blocking en <head> (anti-FOUC): fija data-categoria en <html>
+       antes del paint para mostrar la grilla correcta sin parpadeo. Sin JS,
+       el atributo no se fija y ambas grillas quedan visibles (todo navegable). -->
+  <script is:inline src="/category.js" slot="head"></script>
   <SiteHeader slot="header" />
 
   <!-- Hero -->
@@ -61,7 +67,9 @@ const speeds = [
         para carro mecanico y un simulacro cronometrado. Basado en la normativa colombiana vigente.
       </p>
       <div class="hero__cta">
-        <a class="btn btn--dark" href="/examen/simulacro">Hacer el simulacro</a>
+        <a class="btn btn--dark" id="cta-simulacro" href="/examen/carro/simulacro"
+          >Hacer el simulacro</a
+        >
         <a class="btn btn--ghost" href="#modos">Practicar por temas</a>
       </div>
       <dl class="hero__stats">
@@ -80,11 +88,26 @@ const speeds = [
         Cada bloque te da retroalimentacion inmediata y la justificacion normativa de cada
         respuesta.
       </p>
+      <div class="catswitch" role="group" aria-label="Categoria de licencia">
+        <button type="button" class="catswitch__btn" data-cat-btn="carro" aria-pressed="true">
+          Carro · B1
+        </button>
+        <button type="button" class="catswitch__btn" data-cat-btn="moto" aria-pressed="false">
+          Moto · A2
+        </button>
+      </div>
     </header>
-    <div class="grid">
+    <div class="grid" data-cat-grid="carro">
       {
-        EXAM_MODES.map((mode) => (
-          <ModeCard mode={mode} count={questionsForGroups(mode.groups).length} />
+        modesForCategory('carro').map((mode) => (
+          <ModeCard mode={mode} count={questionsForGroups(mode.category, mode.groups).length} />
+        ))
+      }
+    </div>
+    <div class="grid" data-cat-grid="moto">
+      {
+        modesForCategory('moto').map((mode) => (
+          <ModeCard mode={mode} count={questionsForGroups(mode.category, mode.groups).length} />
         ))
       }
     </div>
@@ -195,10 +218,51 @@ const speeds = [
     margin: 0.5rem 0 0;
   }
 
+  /* Selector segmentado carro/moto. Sin JS queda en su estado por defecto
+     (carro) y la grilla de carro es la visible. */
+  .catswitch {
+    display: inline-flex;
+    margin-top: 1.1rem;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.25rem;
+    gap: 0.25rem;
+  }
+  .catswitch__btn {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    transition:
+      background 0.14s ease,
+      color 0.14s ease;
+  }
+  .catswitch__btn[aria-pressed='true'] {
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  .catswitch__btn:hover:not([aria-pressed='true']) {
+    color: var(--ink);
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.1rem;
+  }
+  /* La grilla visible la decide data-categoria en <html>, fijado por
+     category.js antes del paint (anti-FOUC). Sin JS el atributo no existe y
+     ambas grillas quedan visibles, de modo que toda la home es navegable. */
+  :global(html[data-categoria='carro']) .grid[data-cat-grid='moto'],
+  :global(html[data-categoria='moto']) .grid[data-cat-grid='carro'] {
+    display: none;
   }
   /* El simulacro (ultima tarjeta) es el modo estrella: fila completa
      destacada en vez de quedar huerfano en la rejilla de 3 columnas. */

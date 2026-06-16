@@ -1,11 +1,13 @@
-import type { ExamMode } from './types';
+import type { ExamMode, VehicleCategory } from './types';
+import { withCategory } from './category';
 
 /**
- * Modos disponibles. Los 4 grupos + mecanico + casos son practica con
- * retroalimentacion inmediata; "simulacro" replica el examen oficial:
- * 40 preguntas aleatorias, 40 minutos, aprobacion 80 %.
+ * Modos de carro (licencia B1). Los 4 grupos + mecanico + casos son practica
+ * con retroalimentacion inmediata; "simulacro" replica el examen oficial:
+ * 40 preguntas aleatorias, 40 minutos, aprobacion 80 %. Se etiquetan con su
+ * categoria al componer EXAM_MODES al final del archivo.
  */
-export const EXAM_MODES: readonly ExamMode[] = [
+const CARRO_MODES = [
   {
     slug: 'grupo-1',
     title: 'Grupo I — Aspectos generales, autoridades, licencias y mecanica basica',
@@ -79,8 +81,90 @@ export const EXAM_MODES: readonly ExamMode[] = [
     passPercent: 80,
     accent: 'asfalto',
   },
+] satisfies readonly Omit<ExamMode, 'category'>[];
+
+/**
+ * Modos de moto (licencias A1/A2). Estructura CALE por grupos tematicos + un
+ * simulacro cronometrado. No incluye "mecanico", que es especifico de la
+ * transmision manual de carro. El simulacro no fija `sample`: usa todo el
+ * banco de moto disponible (crecera al completarse el banco real).
+ */
+const MOTO_MODES = [
+  {
+    slug: 'grupo-1',
+    title: 'Grupo I — Aspectos generales, autoridades y licencias (moto)',
+    short: 'Grupo I',
+    description:
+      'Marco legal, autoridades de transito, documentos y categorias de licencia de motocicleta (A1 y A2).',
+    groups: ['I'],
+    immediateFeedback: true,
+    accent: 'azul',
+  },
+  {
+    slug: 'grupo-2',
+    title: 'Grupo II — Normas de comportamiento (moto)',
+    short: 'Grupo II',
+    description: 'Casco, acompanante, comportamiento del motociclista y conduccion segura en moto.',
+    groups: ['II'],
+    immediateFeedback: true,
+    accent: 'verde',
+  },
+  {
+    slug: 'grupo-3',
+    title: 'Grupo III — Senales de transito e infraestructura (moto)',
+    short: 'Grupo III',
+    description:
+      'Senales, uso del carril, luces y demarcacion aplicadas a la circulacion en motocicleta.',
+    groups: ['III'],
+    immediateFeedback: true,
+    accent: 'ambar',
+  },
+  {
+    slug: 'grupo-4',
+    title: 'Grupo IV — Infracciones, sanciones y procedimientos (moto)',
+    short: 'Grupo IV',
+    description:
+      'Comparendos, alcoholemia, SOAT, placa e identificacion y procedimientos para el motociclista.',
+    groups: ['IV'],
+    immediateFeedback: true,
+    accent: 'rojo',
+  },
+  {
+    slug: 'casos',
+    title: 'Casos practicos (moto)',
+    short: 'Casos',
+    description:
+      'Situaciones reales en via para motociclistas: lluvia, trancones y decisiones al conducir.',
+    groups: ['casos'],
+    immediateFeedback: true,
+    accent: 'verde',
+  },
+  {
+    slug: 'simulacro',
+    title: 'Simulacro de moto — banco completo cronometrado',
+    short: 'Simulacro',
+    description:
+      'Formato CALE para moto: preguntas de todos los temas con cronometro y aprobacion con el 80 %.',
+    groups: ['I', 'II', 'III', 'IV', 'casos'],
+    timerSeconds: 14 * 60,
+    immediateFeedback: false,
+    passPercent: 80,
+    accent: 'asfalto',
+  },
+] satisfies readonly Omit<ExamMode, 'category'>[];
+
+/** Todos los modos: carro y moto, ya etiquetados con su categoria. */
+export const EXAM_MODES: readonly ExamMode[] = [
+  ...withCategory<ExamMode>(CARRO_MODES, 'carro'),
+  ...withCategory<ExamMode>(MOTO_MODES, 'moto'),
 ];
 
-export function getMode(slug: string): ExamMode | undefined {
-  return EXAM_MODES.find((m) => m.slug === slug);
+/** Modos de una categoria, en su orden de definicion. */
+export function modesForCategory(category: VehicleCategory): ExamMode[] {
+  return EXAM_MODES.filter((m) => m.category === category);
+}
+
+/** Resuelve un modo por su categoria y slug (el slug solo es unico por categoria). */
+export function getMode(category: string, slug: string): ExamMode | undefined {
+  return EXAM_MODES.find((m) => m.category === category && m.slug === slug);
 }

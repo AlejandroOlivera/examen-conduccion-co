@@ -66,6 +66,11 @@ const ldJson = (obj: Record<string, unknown>) =>
          is:inline deja la etiqueta tal cual (Astro no la empaqueta). -->
     <script is:inline src="/theme.js"></script>
 
+    <!-- Scripts render-blocking propios de cada pagina (anti-FOUC). La home
+         inyecta aqui el selector de categoria para fijar data-categoria en
+         <html> antes del primer paint, igual que el tema. -->
+    <slot name="head" />
+
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="color-scheme" content="light dark" />

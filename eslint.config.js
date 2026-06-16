@@ -12,8 +12,9 @@ export default tseslint.config(
       '.astro/',
       'coverage/',
       'node_modules/',
-      // Script clasico (var, IIFE) servido tal cual desde /public.
+      // Scripts clasicos (var, IIFE) servidos tal cual desde /public.
       'public/theme.js',
+      'public/category.js',
     ],
   },
 
