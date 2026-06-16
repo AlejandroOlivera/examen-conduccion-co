@@ -1,23 +1,31 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import SiteHeader from '../../components/SiteHeader.astro';
-import SiteFooter from '../../components/SiteFooter.astro';
-import { EXAM_MODES, getMode } from '../../data/modes';
-import { questionsForGroups } from '../../data/questions';
-import type { QuizConfig } from '../../data/types';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import { EXAM_MODES, getMode } from '../../../data/modes';
+import { questionsForGroups } from '../../../data/questions';
+import { CATEGORY_LABELS } from '../../../data/category';
+import type { QuizConfig } from '../../../data/types';
 
 export function getStaticPaths() {
-  return EXAM_MODES.map((mode) => ({ params: { modo: mode.slug } }));
+  return EXAM_MODES.map((mode) => ({
+    params: { categoria: mode.category, modo: mode.slug },
+  }));
 }
 
-const { modo } = Astro.params;
-const mode = getMode(modo ?? '');
+const { categoria, modo } = Astro.params;
+const mode = getMode(categoria ?? '', modo ?? '');
 if (!mode) {
-  // Inalcanzable en SSG: getStaticPaths solo genera slugs validos.
-  throw new Error(`Modo desconocido: ${modo}`);
+  // Inalcanzable en SSG: getStaticPaths solo genera combinaciones validas.
+  throw new Error(`Modo desconocido: ${categoria}/${modo}`);
 }
 
-const questions = questionsForGroups(mode.groups);
+const questions = questionsForGroups(mode.category, mode.groups);
+
+// Cantidad real del intento: si el modo muestrea, nunca mas que el pool.
+const askCount = Math.min(mode.sample ?? questions.length, questions.length);
+
+const categoryLabel = CATEGORY_LABELS[mode.category];
 
 // Migas de pan como datos estructurados (Inicio > modo). URLs absolutas.
 const jsonLd = {
@@ -33,9 +41,9 @@ const jsonLd = {
     {
       '@type': 'ListItem',
       position: 2,
-      name: mode.short,
+      name: `${mode.short} (${categoryLabel})`,
       // Con barra final para coincidir exactamente con el canonical.
-      item: new URL(`/examen/${mode.slug}/`, Astro.site).href,
+      item: new URL(`/examen/${mode.category}/${mode.slug}/`, Astro.site).href,
     },
   ],
 };
@@ -68,15 +76,19 @@ const payloadJson = JSON.stringify(payload)
   .join(String.fromCharCode(92) + 'u003c');
 ---
 
-<BaseLayout title={`${mode.short} · Taller B1`} description={mode.description} jsonLd={jsonLd}>
+<BaseLayout
+  title={`${mode.short} · ${categoryLabel} · Taller de conduccion`}
+  description={mode.description}
+  jsonLd={jsonLd}
+>
   <SiteHeader slot="header" backHref="/" backLabel="Todos los temas" />
 
   <section class="container head" data-accent={mode.accent}>
-    <span class="tag">{mode.short}</span>
+    <span class="tag">{categoryLabel} · {mode.short}</span>
     <h1>{mode.title}</h1>
     <p class="lead">{mode.description}</p>
     <ul class="facts">
-      <li><strong>{mode.sample ?? questions.length}</strong> preguntas</li>
+      <li><strong>{askCount}</strong> preguntas</li>
       {
         mode.timerSeconds ? (
           <li>
@@ -118,7 +130,7 @@ const payloadJson = JSON.stringify(payload)
 </BaseLayout>
 
 <script>
-  import { initQuiz } from '../../scripts/quiz';
+  import { initQuiz } from '../../../scripts/quiz';
 
   // Con ViewTransitions la pagina no se recarga al navegar: montamos en
   // astro:page-load (dispara en la carga inicial y tras cada navegacion) y

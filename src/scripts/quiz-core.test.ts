@@ -18,6 +18,7 @@ function rngSeq(values: number[]): () => number {
 
 const makeQuestion = (over: Partial<Question> = {}): Question => ({
   id: 'g1-01',
+  category: 'carro',
   group: 'I',
   prompt: 'Enunciado',
   options: ['a', 'b', 'c', 'd'],

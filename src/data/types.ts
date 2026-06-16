@@ -1,10 +1,19 @@
 /** Grupos tematicos oficiales del examen CALE + secciones de refuerzo. */
 export type GroupId = 'I' | 'II' | 'III' | 'IV' | 'mecanico' | 'casos';
 
+/**
+ * Categoria de vehiculo del examen. "carro" cubre la licencia B1 (automovil
+ * particular); "moto" cubre las licencias A1 (hasta 125 cc) y A2 (mas de
+ * 125 cc). Es ortogonal al `group`: una pregunta es "Grupo II de moto".
+ */
+export type VehicleCategory = 'carro' | 'moto';
+
 /** Una pregunta de opcion multiple. */
 export interface Question {
-  /** Identificador estable (p. ej. "g1-03", "mec-02", "caso-05"). */
+  /** Identificador estable (p. ej. "g1-03", "mec-02", "m-g1-01"). */
   readonly id: string;
+  /** Categoria de vehiculo a la que pertenece. */
+  readonly category: VehicleCategory;
   /** Grupo tematico al que pertenece. */
   readonly group: GroupId;
   /** Enunciado de la pregunta. */
@@ -19,7 +28,9 @@ export interface Question {
 
 /** Configuracion de un modo de practica o simulacro. */
 export interface ExamMode {
-  /** Segmento de URL: /examen/[slug]. */
+  /** Categoria de vehiculo: primer segmento de URL (/examen/[category]/[slug]). */
+  readonly category: VehicleCategory;
+  /** Segundo segmento de URL: /examen/[category]/[slug]. Unico por categoria. */
   readonly slug: string;
   /** Titulo visible. */
   readonly title: string;

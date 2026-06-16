@@ -1,5 +1,5 @@
 ---
-import { EXAM_MODES } from '../data/modes';
+import { modesForCategory } from '../data/modes';
 
 const year = new Date().getFullYear();
 const AUTHOR = 'Alejandro Olivera';
@@ -31,9 +31,9 @@ const GITHUB = 'https://github.com/AlejandroOlivera';
         <h2 class="col__title">Practica</h2>
         <ul class="links">
           {
-            EXAM_MODES.map((mode) => (
+            modesForCategory('carro').map((mode) => (
               <li>
-                <a href={`/examen/${mode.slug}`}>{mode.short}</a>
+                <a href={`/examen/${mode.category}/${mode.slug}`}>{mode.short}</a>
               </li>
             ))
           }

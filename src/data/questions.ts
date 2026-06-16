@@ -1,14 +1,18 @@
-import type { GroupId, Question } from './types';
+import type { GroupId, Question, VehicleCategory } from './types';
+import { withCategory } from './category';
 
 /**
  * Banco de preguntas del taller. Las opciones se almacenan en su orden
  * "natural"; la isla de cliente las baraja en cada intento para que la
  * posicion de la respuesta correcta no sea predecible.
  *
+ * Las preguntas se definen por categoria de vehiculo (sin el campo
+ * `category`) y se etiquetan al componer `QUESTIONS` al final del archivo.
+ *
  * Fuentes: Ley 769 de 2002 (CNTT) y reformas (Ley 1383/2010, Ley 1696/2013,
  * Ley 2161/2021, Ley 2251/2022) y Resolucion 20253040037125 de 2025 (CALE).
  */
-export const QUESTIONS: readonly Question[] = [
+const CARRO_QUESTIONS = [
   // ───────────────────────── GRUPO I ─────────────────────────
   {
     id: 'g1-01',
@@ -1325,9 +1329,215 @@ export const QUESTIONS: readonly Question[] = [
     explanation:
       'Una licencia vencida no habilita para conducir; la sancion es equivalente a no tenerla.',
   },
+] satisfies readonly Omit<Question, 'category'>[];
+
+/**
+ * Banco inicial de moto (licencias A1/A2). Conjunto de muestra para validar
+ * la estructura multi-categoria; se completa con el banco real mas adelante.
+ * IDs prefijados con `m-` para no chocar con los de carro.
+ */
+const MOTO_QUESTIONS = [
+  // ───────────────────────── GRUPO I ─────────────────────────
+  {
+    id: 'm-g1-01',
+    group: 'I',
+    prompt:
+      'En Colombia, la licencia de conduccion para motocicletas de hasta 125 c.c. es la categoria:',
+    options: ['A1', 'A2', 'B1', 'C1'],
+    answer: 0,
+    explanation:
+      'La categoria A1 habilita para motocicletas, motociclos y mototriciclos hasta 125 c.c.; la A2, para cilindrajes superiores (Resolucion 20253040037125 de 2025).',
+  },
+  {
+    id: 'm-g1-02',
+    group: 'I',
+    prompt: 'Para conducir una motocicleta de mas de 125 c.c. se requiere la licencia categoria:',
+    options: ['A1', 'A2', 'B1', 'No requiere licencia'],
+    answer: 1,
+    explanation: 'La categoria A2 cubre motocicletas y similares de cilindrada superior a 125 c.c.',
+  },
+  {
+    id: 'm-g1-03',
+    group: 'I',
+    prompt:
+      'La edad minima para obtener la licencia de conduccion de motocicleta (categoria A1 o A2) es:',
+    options: ['14 anos', '16 anos', '18 anos', '21 anos'],
+    answer: 1,
+    explanation:
+      'El CNTT permite tramitar la licencia de moto desde los 16 anos; antes de los 18 se requiere autorizacion del representante legal.',
+  },
+  // ───────────────────────── GRUPO II ─────────────────────────
+  {
+    id: 'm-g2-01',
+    group: 'II',
+    prompt: 'Al transportar un acompanante en motocicleta, este debe:',
+    options: [
+      'Ir de pie sobre los estribos',
+      'Usar casco y ubicarse en el puesto destinado para el',
+      'Viajar sin casco si el recorrido es corto',
+      'Sostener objetos voluminosos con ambas manos',
+    ],
+    answer: 1,
+    explanation:
+      'Conductor y acompanante deben usar casco y el acompanante debe ir en el asiento disenado para ello (Art. 94 del CNTT).',
+  },
+  {
+    id: 'm-g2-02',
+    group: 'II',
+    prompt: 'El uso del casco en motocicleta, para conductor y acompanante, es:',
+    options: [
+      'Opcional en zonas rurales',
+      'Obligatorio y debe estar debidamente abrochado',
+      'Obligatorio solo de noche',
+      'Obligatorio solo para el conductor',
+    ],
+    answer: 1,
+    explanation:
+      'El Art. 94 del CNTT exige casco que cumpla la norma tecnica para conductor y acompanante en todo momento.',
+  },
+  {
+    id: 'm-g2-03',
+    group: 'II',
+    prompt: 'Sobre el numero de acompanantes en una motocicleta, la norma general indica que:',
+    options: [
+      'Pueden ir hasta tres personas',
+      'Solo se permite un acompanante',
+      'No hay limite si todos llevan casco',
+      'Se permiten dos acompanantes en vias rurales',
+    ],
+    answer: 1,
+    explanation:
+      'La motocicleta solo puede transportar un acompanante, ubicado en el puesto destinado para ello.',
+  },
+  // ───────────────────────── GRUPO III ─────────────────────────
+  {
+    id: 'm-g3-01',
+    group: 'III',
+    prompt: 'Durante el dia, mientras circula, la motocicleta debe llevar:',
+    options: [
+      'Las luces apagadas para ahorrar bateria',
+      'Las luces delanteras y traseras encendidas',
+      'Solo las direccionales',
+      'Las luces encendidas solo en tuneles',
+    ],
+    answer: 1,
+    explanation:
+      'La motocicleta debe transitar con las luces encendidas de dia y de noche para ser mas visible (Art. 96 del CNTT).',
+  },
+  {
+    id: 'm-g3-02',
+    group: 'III',
+    prompt:
+      'El "zigzagueo" entre vehiculos o el uso del mismo carril por varias motos en paralelo:',
+    options: [
+      'Esta permitido si hay trafico lento',
+      'Esta prohibido por ser maniobra riesgosa',
+      'Solo se permite en avenidas anchas',
+      'Es obligatorio para adelantar',
+    ],
+    answer: 1,
+    explanation:
+      'La moto debe transitar por su carril como cualquier vehiculo; zigzaguear o compartir carril en paralelo es una maniobra peligrosa y sancionable.',
+  },
+  {
+    id: 'm-g3-03',
+    group: 'III',
+    prompt: 'Ante una senal reglamentaria de "PARE", el motociclista debe:',
+    options: [
+      'Disminuir y continuar si no viene nadie',
+      'Detenerse por completo antes de la linea y ceder el paso',
+      'Tocar la bocina y seguir',
+      'Acelerar para cruzar rapido',
+    ],
+    answer: 1,
+    explanation:
+      'La senal PARE obliga a detencion total antes de la linea y a ceder el paso, igual que para cualquier vehiculo.',
+  },
+  // ───────────────────────── GRUPO IV ─────────────────────────
+  {
+    id: 'm-g4-01',
+    group: 'IV',
+    prompt: 'Conducir una motocicleta bajo los efectos del alcohol:',
+    options: [
+      'Se sanciona con menor severidad que en carro',
+      'Esta sujeto a las mismas sanciones por grado de alcoholemia que cualquier conductor',
+      'Solo se sanciona si hay siniestro',
+      'No aplica a motos',
+    ],
+    answer: 1,
+    explanation:
+      'Las sanciones por grados de alcoholemia (Ley 1696 de 2013) aplican a todo conductor, incluido el de motocicleta.',
+  },
+  {
+    id: 'm-g4-02',
+    group: 'IV',
+    prompt: 'El SOAT en una motocicleta es:',
+    options: [
+      'Opcional',
+      'Obligatorio para poder transitar',
+      'Necesario solo en carretera',
+      'Reemplazable por la tecnomecanica',
+    ],
+    answer: 1,
+    explanation:
+      'El SOAT es obligatorio para todo vehiculo automotor; circular sin el acarrea multa e inmovilizacion.',
+  },
+  {
+    id: 'm-g4-03',
+    group: 'IV',
+    prompt: 'Sobre la placa de la motocicleta y su identificacion, la norma exige que:',
+    options: [
+      'Solo el conductor porte un distintivo',
+      'La placa este visible y legible segun la reglamentacion vigente',
+      'No es necesaria si la moto es nueva',
+      'Se ubique unicamente en la parte delantera',
+    ],
+    answer: 1,
+    explanation:
+      'La motocicleta debe portar su placa unica nacional visible y legible; su alteracion u ocultamiento es infraccion.',
+  },
+  // ───────────────────────── CASOS ─────────────────────────
+  {
+    id: 'm-caso-01',
+    group: 'casos',
+    prompt: 'Vas en moto y se aproxima lluvia fuerte. Lo mas seguro es:',
+    options: [
+      'Aumentar la velocidad para llegar antes',
+      'Reducir la velocidad, aumentar la distancia de seguimiento y extremar precaucion al frenar',
+      'Frenar bruscamente con el freno delantero',
+      'Apagar las luces para ver mejor',
+    ],
+    answer: 1,
+    explanation:
+      'Con piso mojado disminuye el agarre; hay que reducir velocidad, ampliar distancias y frenar de forma progresiva.',
+  },
+  {
+    id: 'm-caso-02',
+    group: 'casos',
+    prompt:
+      'En un trancon, un motociclista pretende avanzar entre los carros detenidos. Lo correcto es:',
+    options: [
+      'Avanzar entre los vehiculos porque la moto es angosta',
+      'Respetar el carril y la fila, sin zigzaguear entre los vehiculos',
+      'Subirse al anden para adelantar',
+      'Usar el carril contrario',
+    ],
+    answer: 1,
+    explanation:
+      'La moto debe respetar su carril y la fila; circular entre vehiculos o por el anden es riesgoso y sancionable.',
+  },
+] satisfies readonly Omit<Question, 'category'>[];
+
+/** Banco completo: preguntas de carro y de moto, ya etiquetadas. */
+export const QUESTIONS: readonly Question[] = [
+  ...withCategory<Question>(CARRO_QUESTIONS, 'carro'),
+  ...withCategory<Question>(MOTO_QUESTIONS, 'moto'),
 ];
 
-/** Devuelve las preguntas que pertenecen a alguno de los grupos indicados. */
-export function questionsForGroups(groups: readonly GroupId[]): Question[] {
-  return QUESTIONS.filter((q) => groups.includes(q.group));
+/** Devuelve las preguntas de una categoria que pertenecen a alguno de los grupos. */
+export function questionsForGroups(
+  category: VehicleCategory,
+  groups: readonly GroupId[],
+): Question[] {
+  return QUESTIONS.filter((q) => q.category === category && groups.includes(q.group));
 }
