@@ -1,0 +1,306 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout title="Tu panel · Taller B1" noindex={true}>
+  <!-- render-blocking auth guard: runs before paint, redirects to /cuenta if no session -->
+  <script is:inline src="/panel-guard.js" slot="head"></script>
+
+  <SiteHeader slot="header" backHref="/" backLabel="Todos los temas" />
+
+  <section class="container panel" data-accent="azul">
+    <span class="tag">Mi panel</span>
+    <h1 id="panel-title" tabindex="-1">Tu progreso</h1>
+    <div class="road-line" role="presentation"></div>
+
+    <!-- carro/moto toggle: hidden until dashboard.ts enters data view -->
+    <div class="panel__switch" role="group" aria-label="Categoria" data-panel-switch hidden>
+      <button type="button" data-panel-cat="carro" aria-pressed="true">Carro</button>
+      <button type="button" data-panel-cat="moto" aria-pressed="false">Moto</button>
+    </div>
+
+    <div id="panel-root" class="panel__root">
+      <!-- dashboard.ts renders here: skeletons -> KPI grid + sections -->
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<script>
+  import { initDashboard } from '../scripts/dashboard';
+
+  // Con ViewTransitions la pagina no se recarga al navegar: montamos en
+  // astro:page-load (dispara en la carga inicial y tras cada navegacion) y
+  // desmontamos en astro:before-swap para no arrastrar listeners pendientes.
+  let teardown: (() => void) | null = null;
+
+  function mount() {
+    if (teardown) return; // guard de doble montaje
+    const root = document.getElementById('panel-root');
+    if (root) teardown = initDashboard(root);
+  }
+
+  function unmount() {
+    teardown?.();
+    teardown = null;
+  }
+
+  document.addEventListener('astro:page-load', mount);
+  document.addEventListener('astro:before-swap', unmount);
+</script>
+
+<style>
+  /* Scoped styles for the static shell markup (authored in this .astro file). */
+  .panel {
+    max-width: 860px;
+    padding-block: clamp(2rem, 6vw, 4rem);
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    margin: var(--space-3) 0 0;
+  }
+
+  .panel .road-line {
+    width: 84px;
+    margin: var(--space-3) 0 var(--space-4);
+  }
+
+  .panel__switch {
+    display: inline-flex;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+  }
+
+  .panel__switch button {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: var(--space-2) var(--space-3);
+    cursor: pointer;
+    transition:
+      background 0.14s var(--ease-out),
+      color 0.14s var(--ease-out);
+  }
+
+  .panel__switch button[aria-pressed='true'] {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .panel__root {
+    width: 100%;
+  }
+</style>
+
+<style is:global>
+  /*
+   * Global styles for DOM nodes generated at runtime by dashboard.ts.
+   * MUST be is:global because Astro-scoped styles never match runtime-created DOM.
+   * Mirrors the is:global pattern used by [modo].astro for quiz classes.
+   * Classes are prefixed .panel__ to avoid collision with quiz classes.
+   * All colors use design tokens so dark mode is free.
+   */
+
+  /* KPI grid — 5 cards responsive */
+  .panel__kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .panel__kpi-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    text-align: center;
+  }
+
+  .panel__kpi-value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-2xl);
+    color: var(--accent);
+    line-height: 1;
+    /* Skeleton placeholder sizing */
+    min-height: 2.1rem;
+    width: 100%;
+  }
+
+  .panel__kpi-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    /* Skeleton placeholder sizing */
+    min-height: 1rem;
+    width: 100%;
+  }
+
+  /* Skeleton sizing within KPI cards */
+  .panel__kpi-card .skeleton.panel__kpi-value {
+    height: 2.1rem;
+  }
+
+  .panel__kpi-card .skeleton.panel__kpi-label {
+    height: 0.9rem;
+    width: 70%;
+    margin-inline: auto;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Repaso de preguntas falladas (.panel__review*)                       */
+  /* ------------------------------------------------------------------ */
+
+  .panel__review {
+    margin-top: var(--space-6);
+  }
+
+  .panel__review-heading,
+  .panel__hist-heading {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 var(--space-3);
+  }
+
+  .panel__review-empty,
+  .panel__hist-empty {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+  }
+
+  .panel__review-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .panel__review-item {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .panel__review-item summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .panel__review-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .panel__review-prompt {
+    flex: 1;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .panel__review-badge {
+    flex-shrink: 0;
+    font-size: var(--text-xs);
+    /* Ambar saturado es decorativo; el texto va con ambar-dark sobre fondo
+       claro (ambar-bg) para cumplir contraste WCAG AA. */
+    background: var(--signal-amber-bg);
+    color: var(--signal-amber-dark);
+  }
+
+  .panel__review-body {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--line);
+  }
+
+  .panel__review-explanation {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Historial de intentos (.panel__hist*)                                */
+  /* ------------------------------------------------------------------ */
+
+  .panel__hist {
+    margin-top: var(--space-6);
+  }
+
+  /* Scroll horizontal en viewports angostos */
+  .panel__hist-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+
+  .panel__hist-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .panel__hist-table th,
+  .panel__hist-table td {
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  .panel__hist-table thead th {
+    background: var(--paper-2);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+  }
+
+  .panel__hist-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .panel__hist-table tbody tr:hover {
+    background: var(--paper-2);
+  }
+
+  .panel__hist-badge {
+    font-size: var(--text-xs);
+    font-weight: 600;
+  }
+
+  .panel__hist-badge--pass {
+    background: color-mix(in srgb, var(--signal-green) 20%, transparent);
+    color: var(--signal-green);
+  }
+
+  .panel__hist-badge--fail {
+    background: color-mix(in srgb, var(--signal-red) 15%, transparent);
+    color: var(--signal-red);
+  }
+
+  .panel__hist-badge--neutral {
+    background: var(--paper-2);
+    color: var(--ink-soft);
+  }
+</style>

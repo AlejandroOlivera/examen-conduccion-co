@@ -14,6 +14,7 @@ import {
   sampleQuestions,
   scoreAnswers,
 } from './quiz-core';
+import { saveAttempt } from './attempts';
 
 interface QuizState {
   questions: PreparedQuestion[];
@@ -83,6 +84,7 @@ export function initQuiz(root: HTMLElement): () => void {
     remaining: config.timerSeconds,
   };
 
+  let startedAt = Date.now();
   let timerId: number | null = null;
   let deadline: number | null = null;
   let warnedSoon = false;
@@ -365,6 +367,20 @@ export function initQuiz(root: HTMLElement): () => void {
     // Umbral sobre la fraccion exacta, no sobre el porcentaje redondeado.
     const passed = isPassing(correct, total, config.passPercent);
 
+    // Persiste el intento si hay sesion (fire-and-forget; los anonimos no guardan).
+    void saveAttempt({
+      category: config.category,
+      modeSlug: config.mode,
+      score: correct,
+      total,
+      percent: pct,
+      passed,
+      durationS: Math.max(0, Math.round((Date.now() - startedAt) / 1000)),
+      wrongQids: state.questions
+        .filter((q, i) => state.answers[i] !== null && state.answers[i] !== q.correctIndex)
+        .map((q) => q.id),
+    });
+
     if (endedByTimeout) {
       stage.append(
         el('p', { class: 'result__timeup' }, [
@@ -467,6 +483,7 @@ export function initQuiz(root: HTMLElement): () => void {
   }
 
   function restart(): void {
+    startedAt = Date.now();
     const again = sampleQuestions(pool, config.sample);
     state.questions = again.map((q) => prepareQuestion(q));
     state.answers = new Array<number | null>(again.length).fill(null);

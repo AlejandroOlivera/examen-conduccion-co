@@ -53,6 +53,29 @@
 
   --maxw: 1080px;
 
+  /* Escala de espaciado: un solo ritmo para toda la app (margins, gaps, padding). */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Escala tipografica: tamanos nombrados; los 2 mayores son fluidos. */
+  --text-xs: 0.8rem;
+  --text-sm: 0.9rem;
+  --text-base: 1rem;
+  --text-lg: 1.15rem;
+  --text-xl: 1.4rem;
+  --text-2xl: clamp(1.6rem, 1.2rem + 1.8vw, 2.1rem);
+  --text-3xl: clamp(2rem, 1.4rem + 3vw, 2.9rem);
+
+  /* Duraciones de movimiento (acompanan a --ease-out). */
+  --dur-fast: 0.16s;
+  --dur: 0.3s;
+
   color-scheme: light;
 }
 
@@ -135,6 +158,14 @@
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* El atributo `hidden` debe ganar SIEMPRE. Las clases con display propio
+   (.field, .alert, .spinner, .auth-user) son estilos de autor y, por origen
+   de cascada, pisan el `[hidden] { display: none }` del navegador. Con
+   !important garantizamos que un elemento con `hidden` nunca se muestre. */
+[hidden] {
+  display: none !important;
 }
 
 html {
@@ -275,6 +306,150 @@ p {
   border-radius: 999px;
   background: var(--accent-bg);
   color: var(--accent);
+}
+
+/* Panel/tarjeta generica (formularios, paneles del dashboard). */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   Layout — utilidades de composicion vertical.
+   ============================================================ */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ============================================================
+   Formularios — campos, etiquetas y estados de validacion.
+   El error se activa con aria-invalid="true" en el control, asi
+   el estado visual y el accesible nunca se desincronizan.
+   ============================================================ */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.field__label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+.input::placeholder {
+  color: var(--ink-faint);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+.input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.input[aria-invalid='true'] {
+  border-color: var(--signal-red);
+  box-shadow: 0 0 0 3px var(--signal-red-bg);
+}
+
+.field__hint {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+.field__error {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--signal-red);
+}
+
+/* ============================================================
+   Feedback — alertas, carga (spinner/skeleton) y estado vacio.
+   ============================================================ */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+.alert--error {
+  background: var(--signal-red-bg);
+  border-color: var(--signal-red);
+  color: var(--signal-red);
+}
+.alert--success {
+  background: var(--signal-green-bg);
+  border-color: var(--signal-green);
+  color: var(--signal-green);
+}
+.alert--info {
+  background: var(--signal-blue-bg);
+  border-color: var(--signal-blue);
+  color: var(--signal-blue);
+}
+
+/* Spinner: la animacion se neutraliza bajo prefers-reduced-motion (reset global). */
+.spinner {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  border: 2px solid var(--accent-bg);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skeleton: placeholder animado para datos en carga (dashboard). */
+.skeleton {
+  background: linear-gradient(90deg, var(--paper-2) 25%, var(--line) 37%, var(--paper-2) 63%);
+  background-size: 400% 100%;
+  border-radius: var(--radius-sm);
+  animation: skeleton 1.4s ease infinite;
+}
+@keyframes skeleton {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0 50%;
+  }
+}
+
+/* Estado vacio: cuando aun no hay datos que mostrar. */
+.empty {
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  color: var(--ink-soft);
 }
 
 .visually-hidden {

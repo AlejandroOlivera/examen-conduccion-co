@@ -54,6 +54,7 @@ export interface ExamMode {
 
 /** Configuracion serializable que recibe la isla de cliente del quiz. */
 export interface QuizConfig {
+  readonly category: VehicleCategory;
   readonly mode: string;
   readonly title: string;
   readonly immediateFeedback: boolean;

@@ -86,8 +86,8 @@ const CARRO_MODES = [
 /**
  * Modos de moto (licencias A1/A2). Estructura CALE por grupos tematicos + un
  * simulacro cronometrado. No incluye "mecanico", que es especifico de la
- * transmision manual de carro. El simulacro no fija `sample`: usa todo el
- * banco de moto disponible (crecera al completarse el banco real).
+ * transmision manual de carro. El simulacro toma una muestra de 40 preguntas
+ * de todos los grupos, igual que el examen oficial.
  */
 const MOTO_MODES = [
   {
@@ -141,12 +141,13 @@ const MOTO_MODES = [
   },
   {
     slug: 'simulacro',
-    title: 'Simulacro de moto — banco completo cronometrado',
+    title: 'Simulacro de moto — 40 preguntas / 40 minutos',
     short: 'Simulacro',
     description:
-      'Formato CALE para moto: preguntas de todos los temas con cronometro y aprobacion con el 80 %.',
+      'Mismo formato del CALE: 40 preguntas aleatorias de todos los temas, cronometro de 40 minutos y aprobacion con el 80 %.',
     groups: ['I', 'II', 'III', 'IV', 'casos'],
-    timerSeconds: 14 * 60,
+    sample: 40,
+    timerSeconds: 40 * 60,
     immediateFeedback: false,
     passPercent: 80,
     accent: 'asfalto',

@@ -15,6 +15,7 @@ export default tseslint.config(
       // Scripts clasicos (var, IIFE) servidos tal cual desde /public.
       'public/theme.js',
       'public/category.js',
+      'public/panel-guard.js',
     ],
   },
 

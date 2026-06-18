@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout
+  title="Tu cuenta · Taller B1"
+  description="Crea tu cuenta para guardar tu progreso, tus puntajes y repasar lo que fallaste en el examen teorico de conduccion."
+  noindex={true}
+>
+  <SiteHeader slot="header" backHref="/" />
+
+  <section class="container account" data-accent="verde">
+    <div class="account__intro">
+      <span class="tag">Tu cuenta</span>
+      <h1 class="account__title">Guarda tu progreso</h1>
+      <div class="road-line" role="presentation"></div>
+      <p class="account__lead">
+        Practicar no necesita cuenta. Crea una solo si quieres <strong>guardar tus intentos</strong
+        >, ver tu <strong>puntaje</strong> y repasar lo que fallaste.
+      </p>
+    </div>
+
+    <div class="card account__card">
+      <div class="account__tabs" role="tablist" aria-label="Entrar o crear cuenta">
+        <button
+          type="button"
+          class="account__tab"
+          data-auth-tab="signin"
+          role="tab"
+          aria-selected="true"
+        >
+          Entrar
+        </button>
+        <button
+          type="button"
+          class="account__tab"
+          data-auth-tab="signup"
+          role="tab"
+          aria-selected="false"
+        >
+          Crear cuenta
+        </button>
+      </div>
+
+      <form class="stack account__form" data-auth-form novalidate>
+        <div class="field" data-field="name" hidden>
+          <label class="field__label" for="auth-name">Nombre (opcional)</label>
+          <input
+            class="input"
+            id="auth-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            placeholder="Como queres que te llamemos"
+          />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="auth-email">Email</label>
+          <input
+            class="input"
+            id="auth-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            placeholder="tu@email.com"
+          />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="auth-password">Contrasena</label>
+          <input
+            class="input"
+            id="auth-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            minlength="6"
+            placeholder="Minimo 6 caracteres"
+          />
+        </div>
+
+        <p class="alert alert--error" data-auth-error role="alert" hidden></p>
+
+        <button class="btn account__submit" type="submit" data-auth-submit>
+          <span data-submit-label>Entrar</span>
+          <span class="spinner" data-submit-spinner hidden aria-hidden="true"></span>
+        </button>
+      </form>
+    </div>
+
+    <p class="account__note">
+      Tus datos solo se usan para guardar tu progreso. No compartimos tu email.
+    </p>
+  </section>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<script>
+  import { setupAccountForm } from '../scripts/auth';
+  document.addEventListener('astro:page-load', setupAccountForm);
+</script>
+
+<style>
+  .account {
+    max-width: 460px;
+    padding-block: clamp(2rem, 6vw, 4rem);
+  }
+  .account__intro {
+    text-align: center;
+    margin-bottom: var(--space-5);
+  }
+  .account__title {
+    font-size: var(--text-3xl);
+    margin: var(--space-3) 0 0;
+  }
+  .account__intro .road-line {
+    width: 84px;
+    margin: var(--space-3) auto var(--space-4);
+  }
+  .account__lead {
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .account__card {
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+  .account__tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-1);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: var(--space-1);
+    margin-bottom: var(--space-5);
+  }
+  .account__tab {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    padding: var(--space-2) var(--space-3);
+    cursor: pointer;
+    transition:
+      background 0.14s var(--ease-out),
+      color 0.14s var(--ease-out);
+  }
+  .account__tab[aria-selected='true'] {
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+  }
+  .account__tab:hover:not([aria-selected='true']) {
+    color: var(--ink);
+  }
+  .account__submit {
+    width: 100%;
+    margin-top: var(--space-2);
+  }
+  .account__note {
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: var(--text-xs);
+    margin: var(--space-5) 0 0;
+  }
+</style>
