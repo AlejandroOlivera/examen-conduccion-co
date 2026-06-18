@@ -66,6 +66,10 @@ const ldJson = (obj: Record<string, unknown>) =>
          is:inline deja la etiqueta tal cual (Astro no la empaqueta). -->
     <script is:inline src="/theme.js"></script>
 
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <script is:inline src="/sw-register.js"></script>
+
     <!-- Scripts render-blocking propios de cada pagina (anti-FOUC). La home
          inyecta aqui el selector de categoria para fijar data-categoria en
          <html> antes del primer paint, igual que el tema. -->
