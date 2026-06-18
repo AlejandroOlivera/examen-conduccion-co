@@ -160,6 +160,14 @@
   box-sizing: border-box;
 }
 
+/* El atributo `hidden` debe ganar SIEMPRE. Las clases con display propio
+   (.field, .alert, .spinner, .auth-user) son estilos de autor y, por origen
+   de cascada, pisan el `[hidden] { display: none }` del navegador. Con
+   !important garantizamos que un elemento con `hidden` nunca se muestre. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
