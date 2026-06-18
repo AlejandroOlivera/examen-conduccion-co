@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout title="Tu panel · Taller B1" noindex={true}>
+  <!-- render-blocking auth guard: runs before paint, redirects to /cuenta if no session -->
+  <script is:inline src="/panel-guard.js" slot="head"></script>
+
+  <SiteHeader slot="header" backHref="/" backLabel="Todos los temas" />
+
+  <section class="container panel" data-accent="azul">
+    <span class="tag">Mi panel</span>
+    <h1 id="panel-title" tabindex="-1">Tu progreso</h1>
+    <div class="road-line" role="presentation"></div>
+
+    <!-- carro/moto toggle: hidden until dashboard.ts enters data view (Slice 2) -->
+    <div class="panel__switch" role="group" aria-label="Categoria" data-panel-switch hidden>
+      <button type="button" data-panel-cat="carro" aria-pressed="true">Carro</button>
+      <button type="button" data-panel-cat="moto" aria-pressed="false">Moto</button>
+    </div>
+
+    <div id="panel-root" class="panel__root">
+      <!-- dashboard.ts renders here in Slice 2: skeletons -> KPI grid + sections -->
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<style>
+  /* Scoped styles for the static shell markup (authored in this .astro file). */
+  .panel {
+    max-width: 860px;
+    padding-block: clamp(2rem, 6vw, 4rem);
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    margin: var(--space-3) 0 0;
+  }
+
+  .panel .road-line {
+    width: 84px;
+    margin: var(--space-3) 0 var(--space-4);
+  }
+
+  .panel__switch {
+    display: inline-flex;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+  }
+
+  .panel__switch button {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: var(--space-2) var(--space-3);
+    cursor: pointer;
+    transition:
+      background 0.14s var(--ease-out),
+      color 0.14s var(--ease-out);
+  }
+
+  .panel__switch button[aria-pressed='true'] {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .panel__root {
+    width: 100%;
+  }
+</style>
+
+<style is:global>
+  /*
+   * Global styles for DOM nodes generated at runtime by dashboard.ts (Slice 2+).
+   * MUST be is:global because Astro-scoped styles never match runtime-created DOM.
+   * Mirrors the is:global pattern used by [modo].astro for quiz classes.
+   * Classes are prefixed .panel__ to avoid collision with quiz classes.
+   *
+   * Populated in Slice 2. Reserved here as a comment placeholder.
+   */
+</style>
