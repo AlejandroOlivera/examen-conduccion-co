@@ -192,3 +192,208 @@ export function setupAccountForm(): void {
 
   setMode('signin');
 }
+
+/** Wirea el formulario de /recuperar. Idempotente por elemento (resiste View Transitions). */
+export function setupRecoverForm(): void {
+  const form = document.querySelector<HTMLFormElement>('[data-recover-form]');
+  if (!form || form.dataset.bound === '1') return;
+  form.dataset.bound = '1';
+
+  const clientPromise = import('../lib/supabase');
+
+  const errorBox = form.querySelector<HTMLElement>('[data-recover-error]');
+  const successBox = form.querySelector<HTMLElement>('[data-recover-success]');
+  const spinner = form.querySelector<HTMLElement>('.spinner');
+  const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  function hideAll(): void {
+    if (errorBox) {
+      errorBox.hidden = true;
+      errorBox.textContent = '';
+    }
+    if (successBox) {
+      successBox.hidden = true;
+      successBox.textContent = '';
+    }
+  }
+
+  function showError(message: string): void {
+    hideAll();
+    if (!errorBox) return;
+    errorBox.textContent = translateError(message);
+    errorBox.hidden = false;
+  }
+
+  function showSuccess(message: string): void {
+    hideAll();
+    if (!successBox) return;
+    successBox.textContent = message;
+    successBox.hidden = false;
+  }
+
+  function setLoading(loading: boolean): void {
+    if (submit) submit.disabled = loading;
+    if (spinner) spinner.hidden = !loading;
+  }
+
+  async function handleSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    hideAll();
+
+    const data = new FormData(form!);
+    const email = String(data.get('email') ?? '').trim();
+
+    if (!email) {
+      showError('Ingresa tu email.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { supabase, isSupabaseConfigured } = await clientPromise;
+      if (!isSupabaseConfigured) {
+        showError('La autenticacion no esta configurada todavia.');
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/restablecer',
+      });
+
+      if (error) {
+        showError(error.message);
+        return;
+      }
+
+      // Mensaje neutro por seguridad: no revela si el email existe.
+      showSuccess(
+        'Si el email esta registrado, te enviamos un enlace para restablecer tu contrasena. Revisa tu correo.',
+      );
+    } catch {
+      showError('Algo salio mal. Reintenta en un momento.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  form.addEventListener('submit', (event) => void handleSubmit(event));
+}
+
+/** Wirea el formulario de /restablecer. Idempotente por elemento (resiste View Transitions). */
+export function setupResetForm(): void {
+  const form = document.querySelector<HTMLFormElement>('[data-reset-form]');
+  if (!form || form.dataset.bound === '1') return;
+  form.dataset.bound = '1';
+
+  const clientPromise = import('../lib/supabase');
+
+  const errorBox = form.querySelector<HTMLElement>('[data-reset-error]');
+  const invalidBox = document.querySelector<HTMLElement>('[data-reset-invalid]');
+  const spinner = form.querySelector<HTMLElement>('.spinner');
+  const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  function showError(message: string): void {
+    if (!errorBox) return;
+    errorBox.textContent = translateError(message);
+    errorBox.hidden = false;
+  }
+
+  function hideError(): void {
+    if (!errorBox) return;
+    errorBox.hidden = true;
+    errorBox.textContent = '';
+  }
+
+  function showInvalid(): void {
+    if (invalidBox) invalidBox.hidden = false;
+    form!.hidden = true;
+  }
+
+  function setLoading(loading: boolean): void {
+    if (submit) submit.disabled = loading;
+    if (spinner) spinner.hidden = !loading;
+  }
+
+  async function handleSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    hideError();
+
+    const data = new FormData(form!);
+    const password = String(data.get('password') ?? '');
+    const confirm = String(data.get('confirm') ?? '');
+
+    if (password.length < 6) {
+      showError('La contrasena debe tener al menos 6 caracteres.');
+      return;
+    }
+
+    if (password !== confirm) {
+      showError('Las contrasenas no coinciden.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { supabase, isSupabaseConfigured } = await clientPromise;
+      if (!isSupabaseConfigured) {
+        showError('La autenticacion no esta configurada todavia.');
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({ password });
+
+      if (error) {
+        showError(error.message);
+        return;
+      }
+
+      window.location.href = '/panel';
+    } catch {
+      showError('Algo salio mal. Reintenta en un momento.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Escucha el evento PASSWORD_RECOVERY (Supabase lo emite cuando el usuario
+  // llega via el enlace del email). Si la sesion ya estaba activa al montar,
+  // getSession() la detecta directamente.
+  void (async () => {
+    try {
+      const { supabase, isSupabaseConfigured } = await clientPromise;
+      if (!isSupabaseConfigured) {
+        showInvalid();
+        return;
+      }
+
+      let recoveryDetected = false;
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData.session) {
+        recoveryDetected = true;
+      }
+
+      if (!recoveryDetected) {
+        const { data: listenerData } = supabase.auth.onAuthStateChange((event) => {
+          if (event === 'PASSWORD_RECOVERY') {
+            recoveryDetected = true;
+            listenerData.subscription.unsubscribe();
+          }
+        });
+
+        // Espera breve para que Supabase procese el hash del token en la URL.
+        await new Promise<void>((resolve) => setTimeout(resolve, 1500));
+
+        if (!recoveryDetected) {
+          listenerData.subscription.unsubscribe();
+          showInvalid();
+          return;
+        }
+      }
+    } catch {
+      showInvalid();
+    }
+  })();
+
+  form.addEventListener('submit', (event) => void handleSubmit(event));
+}

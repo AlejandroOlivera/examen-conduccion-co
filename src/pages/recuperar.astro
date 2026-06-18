@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout title="Recuperar contrasena · Taller B1" noindex={true}>
+  <SiteHeader slot="header" backHref="/cuenta" />
+
+  <section class="container recover" data-accent="azul">
+    <div class="recover__intro">
+      <h1 class="recover__title">Recuperar contrasena</h1>
+      <p class="recover__lead">
+        Ingresa tu email y te mandamos un enlace para restablecer tu contrasena.
+      </p>
+    </div>
+
+    <div class="card recover__card">
+      <form class="stack" data-recover-form novalidate>
+        <div class="field">
+          <label class="field__label" for="recover-email">Email</label>
+          <input
+            class="input"
+            id="recover-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            placeholder="tu@email.com"
+          />
+        </div>
+
+        <p class="alert alert--error" data-recover-error role="alert" hidden></p>
+        <p class="alert alert--success" data-recover-success role="status" hidden></p>
+
+        <button class="btn recover__submit" type="submit">
+          <span>Enviar enlace</span>
+          <span class="spinner" aria-hidden="true" hidden></span>
+        </button>
+      </form>
+    </div>
+
+    <p class="recover__back">
+      <a href="/cuenta">Volver a Entrar</a>
+    </p>
+  </section>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<script>
+  import { setupRecoverForm } from '../scripts/auth';
+  document.addEventListener('astro:page-load', setupRecoverForm);
+</script>
+
+<style>
+  .recover {
+    max-width: 420px;
+    padding-block: clamp(2rem, 6vw, 4rem);
+  }
+  .recover__intro {
+    text-align: center;
+    margin-bottom: var(--space-5);
+  }
+  .recover__title {
+    font-size: var(--text-3xl);
+    margin: 0 0 var(--space-3);
+  }
+  .recover__lead {
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .recover__card {
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+  .recover__submit {
+    width: 100%;
+    margin-top: var(--space-2);
+  }
+  .recover__back {
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: var(--text-sm);
+    margin: var(--space-5) 0 0;
+  }
+  .recover__back a {
+    color: var(--ink-soft);
+    text-decoration: underline;
+  }
+</style>
