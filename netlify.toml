@@ -35,13 +35,14 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
-    # CSP pragmatica para un sitio estatico sin backend ni contenido de usuario.
+    # CSP para un sitio estatico que usa Supabase desde el cliente (Modelo A: auth + datos via RLS).
     # - script-src 'self': los scripts (Astro, ViewTransitions, tema) se sirven
     #   desde el propio dominio; no hay inline ejecutable.
     # - style-src 'unsafe-inline': Astro inyecta <style> y el quiz fija estilos
     #   inline (p. ej. el ancho de la barra de progreso y el anillo de resultado).
-    # - font/img/connect quedan en el propio origen (fuentes self-hosted).
-    Content-Security-Policy = "default-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'"
+    # - connect-src incluye el origen del proyecto Supabase (auth + datos via RLS);
+    #   font/img y el resto quedan en el propio origen (fuentes self-hosted).
+    Content-Security-Policy = "default-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://iucytobyunrjzeqkrfbo.supabase.co wss://iucytobyunrjzeqkrfbo.supabase.co"
 
 # ---------- Cache de assets con hash (inmutables) ----------
 [[headers]]
