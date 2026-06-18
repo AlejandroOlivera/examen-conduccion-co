@@ -1366,6 +1366,134 @@ const MOTO_QUESTIONS = [
     explanation:
       'El CNTT permite tramitar la licencia de moto desde los 16 anos; antes de los 18 se requiere autorizacion del representante legal.',
   },
+  {
+    id: 'm-g1-04',
+    group: 'I',
+    prompt: 'Para transitar legalmente en motocicleta, el conductor debe portar:',
+    options: [
+      'Licencia de conduccion, licencia de transito y SOAT vigentes',
+      'Unicamente la licencia de conduccion',
+      'Solo el SOAT',
+      'Ningun documento si la motocicleta es nueva',
+    ],
+    answer: 0,
+    explanation:
+      'Para circular se exige licencia de conduccion vigente, licencia de transito, SOAT y revision tecnicomecanica cuando corresponda (CNTT).',
+  },
+  {
+    id: 'm-g1-05',
+    group: 'I',
+    prompt: 'La licencia categoria A2 NO habilita para conducir:',
+    options: [
+      'Motocicletas de mas de 125 c.c.',
+      'Mototriciclos y motociclos',
+      'Automoviles y camionetas particulares',
+      'Motocicletas de uso particular',
+    ],
+    answer: 2,
+    explanation:
+      'A2 habilita para motocicletas y similares de mas de 125 c.c.; para conducir automoviles particulares se requiere la categoria B1.',
+  },
+  {
+    id: 'm-g1-06',
+    group: 'I',
+    prompt: 'El Registro Unico Nacional de Transito (RUNT) es:',
+    options: [
+      'Una aseguradora obligatoria de vehiculos',
+      'El sistema que integra y centraliza el registro de conductores, vehiculos, licencias e infracciones',
+      'El codigo que regula el transito terrestre',
+      'El examen practico de conduccion',
+    ],
+    answer: 1,
+    explanation:
+      'El RUNT centraliza a nivel nacional la informacion de conductores, vehiculos, licencias, infracciones y mas.',
+  },
+  {
+    id: 'm-g1-07',
+    group: 'I',
+    prompt:
+      'En una motocicleta, el documento que identifica el vehiculo y acredita su propiedad es:',
+    options: [
+      'La licencia de transito (tarjeta de propiedad)',
+      'La licencia de conduccion',
+      'El SOAT',
+      'El certificado de revision tecnicomecanica',
+    ],
+    answer: 0,
+    explanation:
+      'La licencia de transito identifica al vehiculo y acredita su propiedad; la licencia de conduccion habilita a la persona para conducir.',
+  },
+  {
+    id: 'm-g1-08',
+    group: 'I',
+    prompt: 'Una persona de 16 anos que desea obtener la licencia de motocicleta (A1) requiere:',
+    options: [
+      'Esperar hasta los 18 anos',
+      'Tener primero la licencia B1',
+      'Autorizacion de su representante legal',
+      'Un permiso especial de la Policia de Transito',
+    ],
+    answer: 2,
+    explanation:
+      'La licencia de moto puede tramitarse desde los 16 anos; mientras la persona sea menor de edad se exige autorizacion del representante legal.',
+  },
+  {
+    id: 'm-g1-09',
+    group: 'I',
+    prompt: 'Para obtener por primera vez la licencia de motocicleta se requiere, en general:',
+    options: [
+      'Unicamente pagar los derechos de tramite',
+      'Aprobar los examenes teorico y practico en un Centro de Ensenanza Automovilistica y obtener el certificado de aptitud',
+      'Ser mayor de 21 anos',
+      'Presentar solo un certificado medico',
+    ],
+    answer: 1,
+    explanation:
+      'Se exige aprobar la formacion y los examenes teorico-practico en un CEA reconocido y contar con el certificado de aptitud fisica, mental y de coordinacion motriz.',
+  },
+  {
+    id: 'm-g1-10',
+    group: 'I',
+    prompt: 'La revision tecnico-mecanica y de emisiones contaminantes (RTM) en motocicletas:',
+    options: [
+      'No aplica a las motocicletas',
+      'Reemplaza al SOAT',
+      'Solo se exige a motos de mas de 125 c.c.',
+      'Es obligatoria; los vehiculos nuevos quedan exentos durante el periodo que fija la ley',
+    ],
+    answer: 3,
+    explanation:
+      'La RTM es obligatoria para motocicletas; los vehiculos nuevos estan exentos durante el plazo legal y luego deben renovarla periodicamente.',
+  },
+  {
+    id: 'm-g1-11',
+    group: 'I',
+    prompt: 'El SOAT de la motocicleta cubre principalmente:',
+    options: [
+      'Los danos materiales de la propia motocicleta',
+      'Los gastos por lesiones o muerte de las personas en un accidente de transito',
+      'El hurto de la motocicleta',
+      'El pago de las multas de transito',
+    ],
+    answer: 1,
+    explanation:
+      'El SOAT ampara a las victimas de siniestros viales (gastos medicos, incapacidad y muerte); no cubre danos materiales ni hurto.',
+  },
+  {
+    id: 'm-g1-12',
+    group: 'I',
+    prompt:
+      'Conducir una motocicleta sin haber obtenido la licencia de conduccion correspondiente:',
+    options: [
+      'Es una infraccion que acarrea multa e inmovilizacion del vehiculo',
+      'Esta permitido en zonas rurales',
+      'Solo se sanciona si ocurre un accidente',
+      'Es valido con el comprobante de inscripcion al curso',
+    ],
+    answer: 0,
+    explanation:
+      'Conducir sin licencia valida es una infraccion sancionable con multa e inmovilizacion del vehiculo (CNTT).',
+  },
   // ───────────────────────── GRUPO II ─────────────────────────
   {
     id: 'm-g2-01',
@@ -1408,6 +1536,133 @@ const MOTO_QUESTIONS = [
     answer: 1,
     explanation:
       'La motocicleta solo puede transportar un acompanante, ubicado en el puesto destinado para ello.',
+  },
+  {
+    id: 'm-g2-04',
+    group: 'II',
+    prompt: 'Para conducir una motocicleta de forma segura en via urbana, el motociclista debe:',
+    options: [
+      'Mantener una velocidad y una distancia de seguimiento prudentes segun el trafico',
+      'Circular siempre a la maxima velocidad permitida',
+      'Seguir de cerca a los vehiculos para aprovechar su estela',
+      'Frenar unicamente con el freno trasero',
+    ],
+    answer: 0,
+    explanation:
+      'La conduccion segura exige adecuar la velocidad a las condiciones de la via y dejar distancia suficiente para reaccionar y frenar a tiempo.',
+  },
+  {
+    id: 'm-g2-05',
+    group: 'II',
+    prompt: 'Sobre transportar ninos pequenos como acompanantes en motocicleta:',
+    options: [
+      'Esta permitido a cualquier edad si llevan casco',
+      'No se permite transportar menores que no puedan sujetarse firmemente y apoyar los pies en las estriberas',
+      'Pueden ir adelante, entre el conductor y el manubrio',
+      'Se permite si el recorrido es corto',
+    ],
+    answer: 1,
+    explanation:
+      'No deben transportarse menores que no alcancen a sostenerse por si mismos ni a apoyar los pies en las estriberas; su seguridad es prioritaria.',
+  },
+  {
+    id: 'm-g2-06',
+    group: 'II',
+    prompt: 'Mientras conduce una motocicleta, manipular el telefono movil con la mano:',
+    options: [
+      'Esta permitido en los semaforos',
+      'Esta prohibido porque distrae y reduce el control del vehiculo',
+      'Se permite con manos libres solo de noche',
+      'Es valido si se va a baja velocidad',
+    ],
+    answer: 1,
+    explanation:
+      'Manipular el celular al conducir es una distraccion sancionable; el conductor debe mantener el control y ambas manos en el manubrio.',
+  },
+  {
+    id: 'm-g2-07',
+    group: 'II',
+    prompt: 'Como regla general, el adelantamiento a otro vehiculo se realiza:',
+    options: [
+      'Por la derecha',
+      'Por la izquierda, cuando la via lo permita y con seguridad',
+      'Por el carril contrario en plena curva',
+      'Por el anden',
+    ],
+    answer: 1,
+    explanation:
+      'El adelantamiento se hace por la izquierda, solo cuando hay visibilidad y espacio suficientes y la senalizacion lo permite.',
+  },
+  {
+    id: 'm-g2-08',
+    group: 'II',
+    prompt: 'Respecto al uso del carril, el motociclista debe:',
+    options: [
+      'Circular sobre las lineas que separan los carriles',
+      'Ocupar su carril como cualquier vehiculo, sin compartirlo en paralelo',
+      'Transitar siempre por la berma',
+      'Cambiar de carril sin senalizar',
+    ],
+    answer: 1,
+    explanation:
+      'La moto tiene derecho a usar un carril completo y debe respetarlo; circular sobre las lineas o en paralelo dentro del mismo carril es riesgoso y sancionable.',
+  },
+  {
+    id: 'm-g2-09',
+    group: 'II',
+    prompt: 'Antes de girar o cambiar de carril, el motociclista debe:',
+    options: [
+      'Acelerar sin avisar',
+      'Indicar la maniobra con las luces direccionales y con anticipacion',
+      'Hacer senas unicamente con el pie',
+      'Girar de inmediato si no ve vehiculos',
+    ],
+    answer: 1,
+    explanation:
+      'Toda maniobra de giro o cambio de carril debe anunciarse con anticipacion mediante las direccionales para advertir a los demas.',
+  },
+  {
+    id: 'm-g2-10',
+    group: 'II',
+    prompt: 'Transportar carga en una motocicleta es admisible siempre que:',
+    options: [
+      'Sobresalga ampliamente a los lados',
+      'No dificulte la conduccion, la visibilidad ni la estabilidad del vehiculo',
+      'Se lleve en los brazos del conductor',
+      'Cubra la placa',
+    ],
+    answer: 1,
+    explanation:
+      'La carga no debe comprometer el control, la visibilidad ni la estabilidad, ni ocultar las luces o la placa del vehiculo.',
+  },
+  {
+    id: 'm-g2-11',
+    group: 'II',
+    prompt:
+      'Al aproximarse a un cruce peatonal (cebra) con peatones cruzando, el motociclista debe:',
+    options: [
+      'Tocar la bocina para que se apuren',
+      'Ceder el paso y detenerse si es necesario',
+      'Pasar rapido entre los peatones',
+      'Acelerar antes de que terminen de cruzar',
+    ],
+    answer: 1,
+    explanation:
+      'El peaton tiene prioridad en los cruces senalizados; el conductor debe cederle el paso (CNTT).',
+  },
+  {
+    id: 'm-g2-12',
+    group: 'II',
+    prompt: 'Conducir una motocicleta en estado de fatiga o somnolencia:',
+    options: [
+      'Mejora los reflejos',
+      'Aumenta el riesgo de siniestro y debe evitarse',
+      'No afecta si se va despacio',
+      'Solo importa en viajes largos con carga',
+    ],
+    answer: 1,
+    explanation:
+      'La fatiga reduce la atencion y el tiempo de reaccion; conducir cansado eleva el riesgo de accidente y debe evitarse.',
   },
   // ───────────────────────── GRUPO III ─────────────────────────
   {
@@ -1453,6 +1708,135 @@ const MOTO_QUESTIONS = [
     explanation:
       'La senal PARE obliga a detencion total antes de la linea y a ceder el paso, igual que para cualquier vehiculo.',
   },
+  {
+    id: 'm-g3-04',
+    group: 'III',
+    prompt: 'Las senales de transito se clasifican principalmente en:',
+    options: [
+      'Verticales, horizontales y de papel',
+      'Reglamentarias, preventivas e informativas',
+      'Urbanas y rurales',
+      'Obligatorias y opcionales',
+    ],
+    answer: 1,
+    explanation:
+      'Las senales se agrupan en reglamentarias (obligaciones o prohibiciones), preventivas (advierten un riesgo) e informativas (orientan al conductor).',
+  },
+  {
+    id: 'm-g3-05',
+    group: 'III',
+    prompt: 'Las senales preventivas advierten al conductor sobre:',
+    options: [
+      'Una obligacion que debe cumplir siempre',
+      'Un posible riesgo o condicion peligrosa mas adelante',
+      'La distancia a una ciudad',
+      'Lugares de servicios turisticos',
+    ],
+    answer: 1,
+    explanation:
+      'Las preventivas anuncian un peligro o condicion especial proxima (curva, cruce, etc.) para que el conductor extreme precaucion.',
+  },
+  {
+    id: 'm-g3-06',
+    group: 'III',
+    prompt: 'Cuando el semaforo cambia a luz amarilla, el motociclista debe:',
+    options: [
+      'Acelerar para alcanzar a pasar',
+      'Detenerse si puede hacerlo con seguridad, pues anuncia el rojo',
+      'Ignorarla por completo',
+      'Tocar la bocina y seguir',
+    ],
+    answer: 1,
+    explanation:
+      'El amarillo advierte que viene el rojo; se debe detener, salvo que se este tan cerca del cruce que frenar resulte inseguro.',
+  },
+  {
+    id: 'm-g3-07',
+    group: 'III',
+    prompt: 'Ante un semaforo en rojo, el conductor de motocicleta debe:',
+    options: [
+      'Detenerse por completo antes de la linea de pare',
+      'Avanzar si no vienen vehiculos',
+      'Reducir y cruzar con precaucion',
+      'Pasar por el costado de los autos detenidos',
+    ],
+    answer: 0,
+    explanation:
+      'El rojo obliga a detencion total antes de la linea de pare; la marcha se reanuda solo con la luz verde.',
+  },
+  {
+    id: 'm-g3-08',
+    group: 'III',
+    prompt: 'Una linea continua en el centro de la calzada indica que:',
+    options: [
+      'Se puede adelantar libremente',
+      'No esta permitido adelantar ni traspasarla',
+      'Es solo decorativa',
+      'Se debe circular justo sobre ella',
+    ],
+    answer: 1,
+    explanation:
+      'La linea continua prohibe adelantar y cruzarla; separa sentidos o carriles que no deben invadirse.',
+  },
+  {
+    id: 'm-g3-09',
+    group: 'III',
+    prompt: 'La senal "CEDA EL PASO" obliga al conductor a:',
+    options: [
+      'Detenerse siempre por completo',
+      'Reducir la velocidad y ceder el paso a los vehiculos de la via preferente',
+      'Acelerar para incorporarse',
+      'Tocar la bocina antes de pasar',
+    ],
+    answer: 1,
+    explanation:
+      'Con "ceda el paso" se disminuye la marcha y, de ser necesario, se detiene para dar prioridad a quienes circulan por la via principal.',
+  },
+  {
+    id: 'm-g3-10',
+    group: 'III',
+    prompt:
+      'Las senales reglamentarias (por ejemplo "PARE" o "PROHIBIDO GIRAR") se caracterizan por:',
+    options: [
+      'Ser de cumplimiento opcional',
+      'Imponer obligaciones o prohibiciones de obligatorio cumplimiento',
+      'Solo informar distancias',
+      'Aplicar unicamente a vehiculos de carga',
+    ],
+    answer: 1,
+    explanation:
+      'Las reglamentarias indican obligaciones, restricciones o prohibiciones cuyo incumplimiento constituye una infraccion.',
+  },
+  {
+    id: 'm-g3-11',
+    group: 'III',
+    prompt:
+      'Las lineas blancas anchas pintadas a lo ancho de la via en una interseccion (cebra) senalan:',
+    options: [
+      'Una zona de parqueo',
+      'El cruce destinado a los peatones',
+      'Un carril exclusivo de motos',
+      'El inicio de una autopista',
+    ],
+    answer: 1,
+    explanation:
+      'La cebra demarca el cruce peatonal; el conductor debe respetarla y ceder el paso a los peatones que cruzan.',
+  },
+  {
+    id: 'm-g3-12',
+    group: 'III',
+    prompt:
+      'Si una via exhibe una senal que prohibe el transito de motocicletas, el motociclista debe:',
+    options: [
+      'Ignorarla si tiene experiencia',
+      'Respetar la prohibicion y no ingresar a esa via',
+      'Pasar solo durante el dia',
+      'Pasar empujando la moto',
+    ],
+    answer: 1,
+    explanation:
+      'Las senales reglamentarias de prohibicion deben acatarse; ingresar donde la moto tiene prohibido circular es una infraccion.',
+  },
   // ───────────────────────── GRUPO IV ─────────────────────────
   {
     id: 'm-g4-01',
@@ -1496,6 +1880,133 @@ const MOTO_QUESTIONS = [
     explanation:
       'La motocicleta debe portar su placa unica nacional visible y legible; su alteracion u ocultamiento es infraccion.',
   },
+  {
+    id: 'm-g4-04',
+    group: 'IV',
+    prompt:
+      'Cuando una autoridad de transito solicita al motociclista la prueba de alcoholemia, este:',
+    options: [
+      'Puede negarse sin consecuencias',
+      'Esta obligado a practicarsela; negarse acarrea sancion',
+      'Solo debe hacerla si tuvo un accidente',
+      'Puede exigir hacerla al dia siguiente',
+    ],
+    answer: 1,
+    explanation:
+      'Negarse a la prueba de embriaguez se sanciona como si se hubiera hallado el mayor grado de alcoholemia (Ley 1696 de 2013).',
+  },
+  {
+    id: 'm-g4-05',
+    group: 'IV',
+    prompt: 'Las sanciones por conducir bajo los efectos del alcohol se graduan segun:',
+    options: [
+      'El tipo de vehiculo unicamente',
+      'El grado de alcoholemia detectado',
+      'La hora del dia',
+      'El color de la motocicleta',
+    ],
+    answer: 1,
+    explanation:
+      'La Ley 1696 de 2013 establece sanciones crecientes (multa, suspension de licencia, trabajo comunitario) segun el grado de alcoholemia.',
+  },
+  {
+    id: 'm-g4-06',
+    group: 'IV',
+    prompt: 'La orden de comparendo es:',
+    options: [
+      'Un reconocimiento por buena conducta vial',
+      'El documento con que la autoridad notifica una presunta infraccion y cita al conductor',
+      'Un permiso para circular sin licencia',
+      'Un descuento en el SOAT',
+    ],
+    answer: 1,
+    explanation:
+      'El comparendo es la orden mediante la cual la autoridad de transito notifica una infraccion y cita al presunto infractor.',
+  },
+  {
+    id: 'm-g4-07',
+    group: 'IV',
+    prompt: 'La inmovilizacion de la motocicleta consiste en:',
+    options: [
+      'Retirarle la placa de forma definitiva',
+      'Suspender temporalmente su circulacion y trasladarla a un parqueadero autorizado',
+      'Una simple multa en dinero',
+      'Cambiar el propietario del vehiculo',
+    ],
+    answer: 1,
+    explanation:
+      'La inmovilizacion suspende la circulacion del vehiculo, que se lleva a patios autorizados hasta subsanar la causa (por ejemplo, sin SOAT o sin licencia).',
+  },
+  {
+    id: 'm-g4-08',
+    group: 'IV',
+    prompt: 'Conducir o ser acompanante en motocicleta sin casco que cumpla la norma:',
+    options: [
+      'No tiene sancion',
+      'Es una infraccion de transito sancionable',
+      'Solo se sanciona en carretera',
+      'Esta permitido a baja velocidad',
+    ],
+    answer: 1,
+    explanation:
+      'El uso de casco homologado es obligatorio para conductor y acompanante; no usarlo es una infraccion (Art. 94 del CNTT).',
+  },
+  {
+    id: 'm-g4-09',
+    group: 'IV',
+    prompt: 'Superar los limites de velocidad establecidos:',
+    options: [
+      'Solo importa en zona escolar',
+      'Es una infraccion y aumenta el riesgo y la gravedad de los siniestros',
+      'Esta permitido si la via esta despejada',
+      'No aplica a las motocicletas',
+    ],
+    answer: 1,
+    explanation:
+      'Exceder los limites de velocidad es una infraccion sancionable y eleva la probabilidad y la severidad de los accidentes.',
+  },
+  {
+    id: 'm-g4-10',
+    group: 'IV',
+    prompt: 'Circular con el SOAT vencido en una motocicleta:',
+    options: [
+      'Esta permitido durante un mes de gracia',
+      'Es una infraccion que puede acarrear multa e inmovilizacion',
+      'Solo se sanciona si hay un accidente',
+      'No tiene ninguna consecuencia',
+    ],
+    answer: 1,
+    explanation:
+      'El SOAT debe estar vigente para circular; hacerlo sin el o vencido acarrea multa e inmovilizacion del vehiculo.',
+  },
+  {
+    id: 'm-g4-11',
+    group: 'IV',
+    prompt: 'Un motociclista involucrado en un accidente con heridos debe:',
+    options: [
+      'Retirarse del lugar para evitar problemas',
+      'Detenerse, prestar o procurar auxilio y avisar a las autoridades',
+      'Continuar la marcha si el dano parece leve',
+      'Mover de inmediato a los heridos sin precaucion',
+    ],
+    answer: 1,
+    explanation:
+      'Todo conductor involucrado en un siniestro debe detenerse, socorrer a los lesionados y reportar a las autoridades; darse a la fuga agrava su responsabilidad.',
+  },
+  {
+    id: 'm-g4-12',
+    group: 'IV',
+    prompt: 'La acumulacion de infracciones graves o la reincidencia puede llevar a:',
+    options: [
+      'Un aumento del cilindraje permitido',
+      'La suspension o cancelacion de la licencia de conduccion',
+      'La exencion del SOAT',
+      'Un ascenso automatico de categoria',
+    ],
+    answer: 1,
+    explanation:
+      'La autoridad puede suspender o cancelar la licencia de conduccion ante infracciones graves o reincidencia, conforme al CNTT.',
+  },
   // ───────────────────────── CASOS ─────────────────────────
   {
     id: 'm-caso-01',
@@ -1525,6 +2036,76 @@ const MOTO_QUESTIONS = [
     answer: 1,
     explanation:
       'La moto debe respetar su carril y la fila; circular entre vehiculos o por el anden es riesgoso y sancionable.',
+  },
+  {
+    id: 'm-caso-03',
+    group: 'casos',
+    prompt: 'Vas a conducir tu moto de noche. Para ser mas visible deberias:',
+    options: [
+      'Vestir ropa oscura',
+      'Usar elementos reflectivos, el casco puesto y mantener las luces encendidas',
+      'Apagar las luces para no encandilar',
+      'Circular pegado a los vehiculos para guiarte',
+    ],
+    answer: 1,
+    explanation:
+      'De noche baja la visibilidad; ropa o elementos reflectivos, casco y luces encendidas ayudan a que otros conductores te vean a tiempo.',
+  },
+  {
+    id: 'm-caso-04',
+    group: 'casos',
+    prompt: 'Te acercas a una curva con arena o gravilla sobre el asfalto. Lo correcto es:',
+    options: [
+      'Entrar a la curva acelerando',
+      'Reducir antes de la curva y evitar frenar o girar bruscamente sobre la zona suelta',
+      'Frenar fuerte con el freno delantero dentro de la curva',
+      'Inclinar la moto al maximo',
+    ],
+    answer: 1,
+    explanation:
+      'Sobre superficies sueltas baja el agarre; conviene reducir antes de entrar y mantener la moto estable, sin frenadas ni giros bruscos.',
+  },
+  {
+    id: 'm-caso-05',
+    group: 'casos',
+    prompt: 'Circulas junto a un camion o un bus en la ciudad. Lo mas seguro es:',
+    options: [
+      'Permanecer a su lado, dentro de su punto ciego',
+      'Evitar sus puntos ciegos y mantener distancia para ser visible',
+      'Adelantarlo por la derecha pegado a la acera',
+      'Seguirlo muy de cerca',
+    ],
+    answer: 1,
+    explanation:
+      'Los vehiculos grandes tienen amplios puntos ciegos; hay que evitarlos, hacerse visible y mantener distancia para reaccionar ante sus maniobras.',
+  },
+  {
+    id: 'm-caso-06',
+    group: 'casos',
+    prompt: 'Al ingresar a una glorieta (rotonda), por regla general:',
+    options: [
+      'Tiene prioridad quien va a entrar',
+      'Tiene prioridad quien ya circula dentro de la glorieta',
+      'Se entra sin mirar porque todos ceden',
+      'Las motos siempre entran primero',
+    ],
+    answer: 1,
+    explanation:
+      'En la glorieta tiene prelacion quien ya circula por ella; quien va a ingresar debe ceder el paso (CNTT).',
+  },
+  {
+    id: 'm-caso-07',
+    group: 'casos',
+    prompt: 'Aparece de repente un obstaculo en tu carril. La reaccion mas segura suele ser:',
+    options: [
+      'Frenar de golpe solo con el freno delantero',
+      'Frenar de forma progresiva con ambos frenos y, si es seguro, esquivar con control',
+      'Cerrar los ojos y soltar el manubrio',
+      'Acelerar para pasar antes',
+    ],
+    answer: 1,
+    explanation:
+      'Frenar de manera progresiva con ambos frenos mantiene la estabilidad; una frenada brusca solo con el delantero puede bloquear la rueda y provocar una caida.',
   },
 ] satisfies readonly Omit<Question, 'category'>[];
 
