@@ -14,6 +14,7 @@ import {
   sampleQuestions,
   scoreAnswers,
 } from './quiz-core';
+import { saveAttempt } from './attempts';
 
 interface QuizState {
   questions: PreparedQuestion[];
@@ -364,6 +365,20 @@ export function initQuiz(root: HTMLElement): () => void {
     const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
     // Umbral sobre la fraccion exacta, no sobre el porcentaje redondeado.
     const passed = isPassing(correct, total, config.passPercent);
+
+    // Persiste el intento si hay sesion (fire-and-forget; los anonimos no guardan).
+    void saveAttempt({
+      category: config.category,
+      modeSlug: config.mode,
+      score: correct,
+      total,
+      percent: pct,
+      passed,
+      durationS: Math.max(0, (config.timerSeconds ?? 0) - (state.remaining ?? 0)),
+      wrongQids: state.questions
+        .filter((q, i) => state.answers[i] !== q.correctIndex)
+        .map((q) => q.id),
+    });
 
     if (endedByTimeout) {
       stage.append(
