@@ -827,6 +827,89 @@ const CARRO_QUESTIONS = [
     explanation:
       'Las intermitentes advierten a otros que el vehiculo representa un peligro temporal.',
   },
+  {
+    id: 'g3-21',
+    group: 'III',
+    prompt: 'Que obligacion impone al conductor la senal de octogono rojo que se muestra?',
+    image: '/senales/pare.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Detenerse completamente antes de continuar',
+      'Reducir la velocidad al cruzar',
+      'Ceder el paso a vehiculos de la via principal',
+      'Continuar si no hay trafico visible',
+    ],
+    answer: 0,
+    explanation:
+      'La senal PARE (octogono rojo) es reglamentaria: el conductor debe detener totalmente el vehiculo antes de continuar, sin excepcion.',
+  },
+  {
+    id: 'g3-22',
+    group: 'III',
+    prompt: 'Que obligacion impone al conductor la senal de triangulo invertido que se muestra?',
+    image: '/senales/ceda-el-paso.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Detenerse completamente',
+      'Ceder el paso a todos los vehiculos y peatones con prioridad',
+      'Girar a la izquierda obligatoriamente',
+      'Aumentar la velocidad para incorporarse',
+    ],
+    answer: 1,
+    explanation:
+      'El triangulo invertido rojo y blanco indica "Ceda el paso": el conductor debe permitir el paso a quienes tengan prioridad antes de continuar.',
+  },
+  {
+    id: 'g3-23',
+    group: 'III',
+    prompt:
+      'Que restriccion impone al conductor la senal circular con el numero 30 que se muestra?',
+    image: '/senales/velocidad-maxima-30.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'La velocidad minima permitida es 30 km/h',
+      'La velocidad maxima permitida es 30 km/h',
+      'La velocidad recomendada en lluvia es 30 km/h',
+      'Zona escolar con limite de 30 km/h solo en horario',
+    ],
+    answer: 1,
+    explanation:
+      'El circulo rojo con numero indica velocidad maxima reglamentaria. Circular por encima de 30 km/h en esa via es una infraccion.',
+  },
+  {
+    id: 'g3-24',
+    group: 'III',
+    prompt:
+      'Que prohibicion establece la senal circular con flecha y barra diagonal que se muestra?',
+    image: '/senales/prohibido-girar-izquierda.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Giro a la izquierda obligatorio',
+      'Giro a la izquierda permitido solo a motos',
+      'Giro a la izquierda prohibido para todos los vehiculos',
+      'Solo camiones no pueden girar a la izquierda',
+    ],
+    answer: 2,
+    explanation:
+      'La barra diagonal roja sobre la flecha de giro indica prohibicion. Ningun vehiculo puede girar a la izquierda en ese punto.',
+  },
+  {
+    id: 'g3-25',
+    group: 'III',
+    prompt:
+      'Que advierte al conductor la senal romboidal amarilla con flecha curva que se muestra?',
+    image: '/senales/curva-peligrosa-derecha.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Prohibicion de girar a la derecha',
+      'Curva peligrosa hacia la derecha en la via',
+      'Zona de derrumbes frecuentes',
+      'Via con pendiente descendente a la derecha',
+    ],
+    answer: 1,
+    explanation:
+      'El rombo amarillo con flecha curva es una senal preventiva que advierte una curva peligrosa a la derecha; el conductor debe reducir la velocidad.',
+  },
 
   // ───────────────────────── GRUPO IV ─────────────────────────
   {
@@ -1836,6 +1919,56 @@ const MOTO_QUESTIONS = [
     answer: 1,
     explanation:
       'Las senales reglamentarias de prohibicion deben acatarse; ingresar donde la moto tiene prohibido circular es una infraccion.',
+  },
+  {
+    id: 'm-g3-13',
+    group: 'III',
+    prompt: 'Que obligacion impone al motociclista la senal de octogono rojo que se muestra?',
+    image: '/senales/pare.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Reducir la velocidad y continuar si no hay trafico',
+      'Detenerse completamente y ceder el paso antes de continuar',
+      'Solo aplica para vehiculos de cuatro ruedas',
+      'Detenerse unicamente si hay peatones cruzando',
+    ],
+    answer: 1,
+    explanation:
+      'La senal PARE obliga a todos los conductores, incluidos los motociclistas, a detener completamente el vehiculo antes de continuar.',
+  },
+  {
+    id: 'm-g3-14',
+    group: 'III',
+    prompt:
+      'Que restriccion impone al motociclista la senal circular con el numero 60 que se muestra?',
+    image: '/senales/velocidad-maxima-60.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Velocidad minima recomendada de 60 km/h',
+      'Velocidad maxima permitida de 60 km/h',
+      'Velocidad de crucero ideal para motocicletas',
+      'Limite de velocidad solo en via mojada',
+    ],
+    answer: 1,
+    explanation:
+      'El circulo rojo con numero es una senal reglamentaria de velocidad maxima. Superar los 60 km/h en esa via constituye una infraccion de transito.',
+  },
+  {
+    id: 'm-g3-15',
+    group: 'III',
+    prompt:
+      'Que advierte al motociclista la senal romboidal amarilla con flecha curva que se muestra?',
+    image: '/senales/curva-peligrosa-derecha.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Via cerrada por derrumbe',
+      'Curva peligrosa a la derecha; reducir velocidad y ajustar trayectoria',
+      'Prohibicion de adelantar en curva',
+      'Zona de peaje proxima',
+    ],
+    answer: 1,
+    explanation:
+      'El rombo amarillo con flecha curva advierte una curva peligrosa a la derecha. El motociclista debe reducir velocidad y ajustar la trayectoria con anticipacion.',
   },
   // ───────────────────────── GRUPO IV ─────────────────────────
   {

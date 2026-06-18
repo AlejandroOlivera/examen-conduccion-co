@@ -198,6 +198,19 @@ export function initQuiz(root: HTMLElement): () => void {
     prompt.tabIndex = -1;
     stage.append(prompt);
 
+    // Imagen de la senal (solo si la pregunta la incluye)
+    if (q.image) {
+      const img = el('img', {
+        class: 'quiz__image',
+        src: q.image,
+        alt: q.imageAlt ?? 'Senal de transito para identificar',
+        loading: 'lazy',
+        width: '220',
+        height: '220',
+      });
+      stage.append(img);
+    }
+
     // Opciones (grupo de botones)
     const list = el('div', {
       class: enter ? 'quiz__options is-enter' : 'quiz__options',

@@ -24,6 +24,10 @@ export interface Question {
   readonly answer: number;
   /** Justificacion breve apoyada en la normativa. */
   readonly explanation: string;
+  /** Ruta al SVG de la senal de transito (solo preguntas de senales). */
+  readonly image?: string;
+  /** Texto alternativo de la imagen (solo preguntas de senales). */
+  readonly imageAlt?: string;
 }
 
 /** Configuracion de un modo de practica o simulacro. */

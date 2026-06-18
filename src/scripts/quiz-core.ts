@@ -14,6 +14,10 @@ export interface PreparedQuestion {
   options: string[];
   correctIndex: number;
   explanation: string;
+  /** Ruta al SVG de la senal (solo preguntas con imagen). */
+  image?: string;
+  /** Texto alternativo de la imagen. */
+  imageAlt?: string;
 }
 
 /** Generador de aleatoriedad en [0, 1). Por defecto Math.random; inyectable en tests. */
@@ -42,6 +46,8 @@ export function prepareQuestion(raw: Question, rng: Rng = Math.random): Prepared
     options: mixed.map((o) => o.text),
     correctIndex: mixed.findIndex((o) => o.correct),
     explanation: raw.explanation,
+    image: raw.image,
+    imageAlt: raw.imageAlt,
   };
 }
 
