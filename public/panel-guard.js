@@ -8,7 +8,7 @@
 
   function hasValidSession() {
     try {
-      var raw = localStorage.getItem('tallerb1-auth');
+      var raw = localStorage.getItem('tallerb1-auth'); // Debe coincidir con STORAGE_KEY en src/lib/auth-constants.ts
       if (!raw) return false;
       var s = JSON.parse(raw);
       return !!(s && (s.access_token || s.user));

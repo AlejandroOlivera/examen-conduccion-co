@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { STORAGE_KEY } from './auth-constants';
 
 // Cliente Supabase para el navegador (Modelo A: estatico + cliente + RLS).
 // Las claves son publicas; la seguridad la imponen las policies RLS en Postgres.
@@ -23,7 +24,7 @@ export const supabase = createClient(
   supabaseAnonKey ?? 'public-anon-key',
   {
     auth: {
-      storageKey: 'tallerb1-auth',
+      storageKey: STORAGE_KEY,
       persistSession: true,
       autoRefreshToken: true,
     },

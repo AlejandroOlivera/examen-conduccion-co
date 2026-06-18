@@ -11,12 +11,18 @@ import { QUESTIONS } from '../data/questions';
 import { EXAM_MODES } from '../data/modes';
 import { computeStats } from './dashboard-core';
 import type { AttemptRow, DashboardStats } from './dashboard-core';
+import { STORAGE_KEY } from '../lib/auth-constants';
 
 // ---------------------------------------------------------------------------
 // Mapa de preguntas por id — construido UNA vez al nivel de modulo.
 // QUESTIONS es datos estaticos ya embarcados; NO es el SDK. Seguro aqui.
 // ---------------------------------------------------------------------------
 const byId = new Map<string, Question>(QUESTIONS.map((q) => [q.id, q]));
+
+// Mapa de label por modo — evita EXAM_MODES.find() O(n) por cada fila del historial.
+const modeLabelById = new Map<string, string>(
+  EXAM_MODES.map((m) => [`${m.category}:${m.slug}`, m.short ?? m.title]),
+);
 
 // ---------------------------------------------------------------------------
 // Minimal el() helper (copiado local de quiz.ts; NO se importa desde alli
@@ -194,11 +200,9 @@ function renderHistory(container: HTMLElement, attempts: AttemptRow[]): void {
     // Columna: Fecha (Colombia UTC-5)
     row.append(el('td', {}, [formatBogotaDate(attempt.created_at)]));
 
-    // Columna: Modo (label desde EXAM_MODES, fallback al slug crudo)
-    const modeEntry = EXAM_MODES.find(
-      (m) => m.category === attempt.category && m.slug === attempt.mode_slug,
-    );
-    const modeLabel = modeEntry ? modeEntry.short : attempt.mode_slug;
+    // Columna: Modo (label desde modeLabelById, fallback al slug crudo)
+    const modeLabel =
+      modeLabelById.get(`${attempt.category}:${attempt.mode_slug}`) ?? attempt.mode_slug;
     row.append(el('td', {}, [modeLabel]));
 
     // Columna: %
@@ -267,12 +271,7 @@ function renderDataView(root: HTMLElement, attempts: AttemptRow[], active: Vehic
 // ---------------------------------------------------------------------------
 // render — dispatch principal (usa el tipo View)
 // ---------------------------------------------------------------------------
-function render(
-  root: HTMLElement,
-  view: View,
-  attempts: AttemptRow[],
-  active: VehicleCategory,
-): void {
+function render(root: HTMLElement, view: View): void {
   switch (view.kind) {
     case 'loading':
       renderLoading(root);
@@ -287,7 +286,7 @@ function render(
       renderError(root, view.reason);
       break;
     case 'data':
-      renderDataView(root, attempts, active);
+      renderDataView(root, view.attempts, view.active);
       break;
   }
 }
@@ -341,12 +340,7 @@ export function initDashboard(root: HTMLElement): () => void {
     if (!cat || cat === currentActive) return;
     currentActive = cat;
     updateToggle(currentActive);
-    render(
-      root,
-      { kind: 'data', attempts: currentAttempts, active: currentActive },
-      currentAttempts,
-      currentActive,
-    );
+    render(root, { kind: 'data', attempts: currentAttempts, active: currentActive });
     announce(`Mostrando datos para ${currentActive === 'carro' ? 'Carro' : 'Moto'}.`);
   }
 
@@ -355,16 +349,16 @@ export function initDashboard(root: HTMLElement): () => void {
   }
 
   // Render inicial: skeleton
-  render(root, { kind: 'loading' }, [], 'carro');
+  render(root, { kind: 'loading' });
   announce('Cargando tu progreso...');
 
   // Flujo asincrono principal
   void (async () => {
     // 1. Comprobacion sincrona de presencia de sesion.
-    const rawSession = localStorage.getItem('tallerb1-auth');
+    const rawSession = localStorage.getItem(STORAGE_KEY);
     if (!rawSession) {
       if (signal.aborted) return;
-      render(root, { kind: 'error', reason: 'auth' }, [], 'carro');
+      render(root, { kind: 'error', reason: 'auth' });
       announce('Sesion no encontrada. Vuelve a entrar.');
       return;
     }
@@ -374,7 +368,7 @@ export function initDashboard(root: HTMLElement): () => void {
     if (signal.aborted) return;
 
     if (!isSupabaseConfigured) {
-      render(root, { kind: 'not-configured' }, [], 'carro');
+      render(root, { kind: 'not-configured' });
       announce('El panel no esta disponible en este entorno.');
       return;
     }
@@ -385,7 +379,7 @@ export function initDashboard(root: HTMLElement): () => void {
 
     const userId = sessData.session?.user?.id;
     if (!userId) {
-      render(root, { kind: 'error', reason: 'auth' }, [], 'carro');
+      render(root, { kind: 'error', reason: 'auth' });
       announce('La sesion ha expirado. Vuelve a entrar.');
       return;
     }
@@ -403,7 +397,7 @@ export function initDashboard(root: HTMLElement): () => void {
     if (error) {
       const isAuth =
         (error as { status?: number }).status === 401 || /jwt|token/i.test(error.message ?? '');
-      render(root, { kind: 'error', reason: isAuth ? 'auth' : 'network' }, [], 'carro');
+      render(root, { kind: 'error', reason: isAuth ? 'auth' : 'network' });
       announce(isAuth ? 'La sesion ha expirado.' : 'Error de red al cargar el progreso.');
       return;
     }
@@ -412,7 +406,7 @@ export function initDashboard(root: HTMLElement): () => void {
 
     // 5. Estado vacio.
     if (rows.length === 0) {
-      render(root, { kind: 'empty' }, [], 'carro');
+      render(root, { kind: 'empty' });
       announce('Aun no tienes intentos guardados.');
       return;
     }
@@ -429,12 +423,7 @@ export function initDashboard(root: HTMLElement): () => void {
     currentActive = defaultCat;
 
     updateToggle(currentActive);
-    render(
-      root,
-      { kind: 'data', attempts: currentAttempts, active: currentActive },
-      currentAttempts,
-      currentActive,
-    );
+    render(root, { kind: 'data', attempts: currentAttempts, active: currentActive });
     announce(`${rows.length} intentos cargados.`);
   })();
 

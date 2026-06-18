@@ -84,6 +84,7 @@ export function initQuiz(root: HTMLElement): () => void {
     remaining: config.timerSeconds,
   };
 
+  let startedAt = Date.now();
   let timerId: number | null = null;
   let deadline: number | null = null;
   let warnedSoon = false;
@@ -374,9 +375,9 @@ export function initQuiz(root: HTMLElement): () => void {
       total,
       percent: pct,
       passed,
-      durationS: Math.max(0, (config.timerSeconds ?? 0) - (state.remaining ?? 0)),
+      durationS: Math.max(0, Math.round((Date.now() - startedAt) / 1000)),
       wrongQids: state.questions
-        .filter((q, i) => state.answers[i] !== q.correctIndex)
+        .filter((q, i) => state.answers[i] !== null && state.answers[i] !== q.correctIndex)
         .map((q) => q.id),
     });
 
@@ -482,6 +483,7 @@ export function initQuiz(root: HTMLElement): () => void {
   }
 
   function restart(): void {
+    startedAt = Date.now();
     const again = sampleQuestions(pool, config.sample);
     state.questions = again.map((q) => prepareQuestion(q));
     state.answers = new Array<number | null>(again.length).fill(null);

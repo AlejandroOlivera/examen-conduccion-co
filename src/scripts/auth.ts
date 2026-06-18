@@ -5,8 +5,7 @@
 // cargan el SDK solo para mostrar "Entrar". supabase-js se carga de forma
 // diferida unicamente en /cuenta y al cerrar sesion.
 
-// Debe coincidir con storageKey en src/lib/supabase.ts.
-const STORAGE_KEY = 'tallerb1-auth';
+import { STORAGE_KEY } from '../lib/auth-constants';
 
 type AuthMode = 'signin' | 'signup';
 
@@ -53,8 +52,12 @@ async function logout(event: Event): Promise<void> {
   const target = event.target as HTMLElement | null;
   if (!target?.closest('[data-auth-logout]')) return;
   event.preventDefault();
-  const { supabase } = await import('../lib/supabase');
-  await supabase.auth.signOut();
+  try {
+    const { supabase, isSupabaseConfigured } = await import('../lib/supabase');
+    if (isSupabaseConfigured) await supabase.auth.signOut();
+  } catch (err) {
+    console.error('[auth] Error al cerrar sesion:', err);
+  }
   window.location.href = '/';
 }
 
@@ -165,8 +168,12 @@ export function setupAccountForm(): void {
       // Con la confirmacion de email apagada, signUp ya deja la sesion activa.
       // Si no hay sesion (confirmacion aun activa), se avisa y se vuelve a Entrar.
       if (!result.session) {
-        showError('Cuenta creada. Revisa tu email para confirmarla y luego inicia sesion.');
-        setMode('signin');
+        if (mode === 'signup') {
+          showError('Cuenta creada. Revisa tu email para confirmarla y luego inicia sesion.');
+          setMode('signin');
+        } else {
+          showError('No se pudo iniciar sesion. Revisa tus datos e intenta de nuevo.');
+        }
         return;
       }
 

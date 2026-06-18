@@ -4,9 +4,7 @@
 // supabase-js ni se guarda nada. Solo se persiste para usuarios logueados.
 
 import type { VehicleCategory } from '../data/types';
-
-// Debe coincidir con storageKey en src/lib/supabase.ts.
-const STORAGE_KEY = 'tallerb1-auth';
+import { STORAGE_KEY } from '../lib/auth-constants';
 
 export interface AttemptInput {
   category: VehicleCategory;
