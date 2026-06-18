@@ -29,3 +29,4 @@ pnpm-debug.log*
 # tooling de IA local
 .agents/
 .claude/
+.atl/

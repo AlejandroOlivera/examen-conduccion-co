@@ -8,3 +8,6 @@ pnpm-lock.yaml
 # Binarios / assets
 public/og.png
 public/favicon.svg
+
+# Tooling local de SDD
+.atl/
