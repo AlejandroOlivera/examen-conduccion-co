@@ -6,9 +6,17 @@
    aislado del bundle de paginas publicas.
    ============================================================ */
 
-import type { VehicleCategory } from '../data/types';
+import type { Question, VehicleCategory } from '../data/types';
+import { QUESTIONS } from '../data/questions';
+import { EXAM_MODES } from '../data/modes';
 import { computeStats } from './dashboard-core';
 import type { AttemptRow, DashboardStats } from './dashboard-core';
+
+// ---------------------------------------------------------------------------
+// Mapa de preguntas por id — construido UNA vez al nivel de modulo.
+// QUESTIONS es datos estaticos ya embarcados; NO es el SDK. Seguro aqui.
+// ---------------------------------------------------------------------------
+const byId = new Map<string, Question>(QUESTIONS.map((q) => [q.id, q]));
 
 // ---------------------------------------------------------------------------
 // Minimal el() helper (copiado local de quiz.ts; NO se importa desde alli
@@ -96,6 +104,129 @@ function renderKpiCard(value: string, label: string): HTMLElement {
   return card;
 }
 
+// ---------------------------------------------------------------------------
+// Formato de fecha en hora Colombia (UTC-5, sin DST)
+// ---------------------------------------------------------------------------
+function formatBogotaDate(iso: string): string {
+  const utcMs = Date.parse(iso);
+  // Desplaza -5h para obtener la hora Bogota, luego formatea como fecha local.
+  const local = new Date(utcMs - 5 * 60 * 60 * 1000);
+  const y = local.getUTCFullYear();
+  const m = String(local.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(local.getUTCDate()).padStart(2, '0');
+  const hh = String(local.getUTCHours()).padStart(2, '0');
+  const mm = String(local.getUTCMinutes()).padStart(2, '0');
+  return `${y}-${m}-${d} ${hh}:${mm}`;
+}
+
+// ---------------------------------------------------------------------------
+// renderTopWrong — lista de preguntas mas falladas
+// ---------------------------------------------------------------------------
+function renderTopWrong(container: HTMLElement, topWrong: DashboardStats['topWrong']): void {
+  container.replaceChildren();
+
+  const heading = el('h2', { class: 'panel__review-heading' }, ['Repasa lo que fallaste']);
+  container.append(heading);
+
+  if (topWrong.length === 0) {
+    const empty = el('p', { class: 'panel__review-empty' }, [
+      'No hay preguntas falladas todavia. Haz un examen para ver tu repaso aqui.',
+    ]);
+    container.append(empty);
+    return;
+  }
+
+  const list = el('div', { class: 'panel__review-list' });
+
+  for (const { id, count } of topWrong) {
+    const question = byId.get(id);
+    // Si el id es obsoleto (pregunta eliminada del banco) lo omitimos.
+    if (!question) continue;
+
+    const details = el('details', { class: 'panel__review-item card' });
+    const badge = el('span', { class: 'tag panel__review-badge' }, [
+      `fallada ${count} ${count === 1 ? 'vez' : 'veces'}`,
+    ]);
+    const summary = el('summary', { class: 'panel__review-summary' });
+    summary.append(el('span', { class: 'panel__review-prompt' }, [question.prompt]), badge);
+    const body = el('div', { class: 'panel__review-body' });
+    body.append(el('p', { class: 'panel__review-explanation' }, [question.explanation]));
+    details.append(summary, body);
+    list.append(details);
+  }
+
+  container.append(list);
+}
+
+// ---------------------------------------------------------------------------
+// renderHistory — tabla de historial de intentos
+// ---------------------------------------------------------------------------
+function renderHistory(container: HTMLElement, attempts: AttemptRow[]): void {
+  container.replaceChildren();
+
+  const heading = el('h2', { class: 'panel__hist-heading' }, ['Historial de intentos']);
+  container.append(heading);
+
+  if (attempts.length === 0) {
+    const empty = el('p', { class: 'panel__hist-empty' }, [
+      'No hay intentos para esta categoria todavia.',
+    ]);
+    container.append(empty);
+    return;
+  }
+
+  const wrapper = el('div', { class: 'panel__hist-wrapper' });
+  const table = el('table', { class: 'panel__hist-table', 'aria-label': 'Historial de intentos' });
+
+  const thead = el('thead');
+  const headerRow = el('tr');
+  for (const label of ['Fecha', 'Modo', '%', 'Estado']) {
+    headerRow.append(el('th', { scope: 'col' }, [label]));
+  }
+  thead.append(headerRow);
+  table.append(thead);
+
+  const tbody = el('tbody');
+
+  for (const attempt of attempts) {
+    const row = el('tr');
+
+    // Columna: Fecha (Colombia UTC-5)
+    row.append(el('td', {}, [formatBogotaDate(attempt.created_at)]));
+
+    // Columna: Modo (label desde EXAM_MODES, fallback al slug crudo)
+    const modeEntry = EXAM_MODES.find(
+      (m) => m.category === attempt.category && m.slug === attempt.mode_slug,
+    );
+    const modeLabel = modeEntry ? modeEntry.short : attempt.mode_slug;
+    row.append(el('td', {}, [modeLabel]));
+
+    // Columna: %
+    row.append(el('td', {}, [`${attempt.percent}%`]));
+
+    // Columna: Estado — simulacro (passed !== null) muestra Aprobado/No aprobado; resto muestra —
+    let estadoText: string;
+    let estadoClass: string;
+    if (attempt.passed === null) {
+      estadoText = '—';
+      estadoClass = 'tag panel__hist-badge panel__hist-badge--neutral';
+    } else if (attempt.passed) {
+      estadoText = 'Aprobado';
+      estadoClass = 'tag panel__hist-badge panel__hist-badge--pass';
+    } else {
+      estadoText = 'No aprobado';
+      estadoClass = 'tag panel__hist-badge panel__hist-badge--fail';
+    }
+    row.append(el('td', {}, [el('span', { class: estadoClass }, [estadoText])]));
+
+    tbody.append(row);
+  }
+
+  table.append(tbody);
+  wrapper.append(table);
+  container.append(wrapper);
+}
+
 function renderDataView(root: HTMLElement, attempts: AttemptRow[], active: VehicleCategory): void {
   root.replaceChildren();
 
@@ -112,6 +243,19 @@ function renderDataView(root: HTMLElement, attempts: AttemptRow[], active: Vehic
     renderKpiCard(String(stats.streak), 'Racha (dias)'),
   );
   root.append(grid);
+
+  // Top wrong review section
+  const reviewSection = el('section', {
+    class: 'panel__review',
+    'aria-label': 'Repaso de preguntas falladas',
+  });
+  renderTopWrong(reviewSection, stats.topWrong);
+  root.append(reviewSection);
+
+  // History table section
+  const histSection = el('section', { class: 'panel__hist', 'aria-label': 'Historial' });
+  renderHistory(histSection, filtered);
+  root.append(histSection);
 
   // Move focus to panel heading on data load
   const panelTitle = document.getElementById('panel-title');

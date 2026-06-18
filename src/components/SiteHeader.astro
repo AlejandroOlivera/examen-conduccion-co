@@ -52,6 +52,7 @@ const { backHref, backLabel = 'Volver al inicio' } = Astro.props;
       <a class="back" href="/cuenta" data-auth-login>Entrar</a>
       <div class="auth-user" data-auth-user hidden>
         <span class="auth-user__name" data-auth-name></span>
+        <a class="back auth-user__panel" href="/panel">Mi panel</a>
         <button type="button" class="back auth-user__logout" data-auth-logout>Salir</button>
       </div>
 
