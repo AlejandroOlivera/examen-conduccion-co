@@ -9,7 +9,10 @@ describe('banco de preguntas', () => {
   });
 
   it('no tiene enunciados duplicados', () => {
-    const prompts = QUESTIONS.map((q) => q.prompt.trim().toLowerCase());
+    // Las preguntas con imagen de senal pueden compartir el enunciado generico
+    // "Que indica esta senal?" porque se diferencian visualmente por la imagen.
+    const textOnly = QUESTIONS.filter((q) => !q.image);
+    const prompts = textOnly.map((q) => q.prompt.trim().toLowerCase());
     expect(new Set(prompts).size).toBe(prompts.length);
   });
 });

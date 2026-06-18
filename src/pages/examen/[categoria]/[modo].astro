@@ -67,6 +67,8 @@ const payload = questions.map((q) => ({
   options: q.options,
   answer: q.answer,
   explanation: q.explanation,
+  image: q.image,
+  imageAlt: q.imageAlt,
 }));
 
 // Escapa el signo "menor que" (charCode 60) como secuencia unicode para
@@ -277,6 +279,17 @@ const payloadJson = JSON.stringify(payload)
     border-radius: 99px;
     transition: width 0.3s ease;
   }
+  .quiz__image {
+    display: block;
+    margin: 0 auto 1.4rem;
+    max-width: 220px;
+    height: auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem;
+  }
+
   .quiz__prompt {
     font-family: var(--font-display);
     font-weight: 600;
