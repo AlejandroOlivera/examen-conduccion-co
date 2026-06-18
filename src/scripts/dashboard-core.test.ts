@@ -327,7 +327,7 @@ describe('computeStats — integracion', () => {
     expect(result.topWrong).toHaveLength(2);
   });
 
-  it('nowDate se reenvía a computeStreak (racha correcta con fixture conocido)', () => {
+  it('nowDate se reenvia a computeStreak (racha correcta con fixture conocido)', () => {
     // attempts on Jan 14 and Jan 15 (Bogota), nowDate = Jan 15
     const now = new Date('2024-01-15T17:00:00.000Z');
     const attempts = [

@@ -217,8 +217,10 @@ import SiteFooter from '../components/SiteFooter.astro';
   .panel__review-badge {
     flex-shrink: 0;
     font-size: var(--text-xs);
-    background: var(--signal-amber);
-    color: var(--signal-amber-dark, #92400e);
+    /* Ambar saturado es decorativo; el texto va con ambar-dark sobre fondo
+       claro (ambar-bg) para cumplir contraste WCAG AA. */
+    background: var(--signal-amber-bg);
+    color: var(--signal-amber-dark);
   }
 
   .panel__review-body {
