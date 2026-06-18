@@ -15,19 +15,42 @@ import SiteFooter from '../components/SiteFooter.astro';
     <h1 id="panel-title" tabindex="-1">Tu progreso</h1>
     <div class="road-line" role="presentation"></div>
 
-    <!-- carro/moto toggle: hidden until dashboard.ts enters data view (Slice 2) -->
+    <!-- carro/moto toggle: hidden until dashboard.ts enters data view -->
     <div class="panel__switch" role="group" aria-label="Categoria" data-panel-switch hidden>
       <button type="button" data-panel-cat="carro" aria-pressed="true">Carro</button>
       <button type="button" data-panel-cat="moto" aria-pressed="false">Moto</button>
     </div>
 
     <div id="panel-root" class="panel__root">
-      <!-- dashboard.ts renders here in Slice 2: skeletons -> KPI grid + sections -->
+      <!-- dashboard.ts renders here: skeletons -> KPI grid + sections -->
     </div>
   </section>
 
   <SiteFooter slot="footer" />
 </BaseLayout>
+
+<script>
+  import { initDashboard } from '../scripts/dashboard';
+
+  // Con ViewTransitions la pagina no se recarga al navegar: montamos en
+  // astro:page-load (dispara en la carga inicial y tras cada navegacion) y
+  // desmontamos en astro:before-swap para no arrastrar listeners pendientes.
+  let teardown: (() => void) | null = null;
+
+  function mount() {
+    if (teardown) return; // guard de doble montaje
+    const root = document.getElementById('panel-root');
+    if (root) teardown = initDashboard(root);
+  }
+
+  function unmount() {
+    teardown?.();
+    teardown = null;
+  }
+
+  document.addEventListener('astro:page-load', mount);
+  document.addEventListener('astro:before-swap', unmount);
+</script>
 
 <style>
   /* Scoped styles for the static shell markup (authored in this .astro file). */
@@ -80,11 +103,61 @@ import SiteFooter from '../components/SiteFooter.astro';
 
 <style is:global>
   /*
-   * Global styles for DOM nodes generated at runtime by dashboard.ts (Slice 2+).
+   * Global styles for DOM nodes generated at runtime by dashboard.ts.
    * MUST be is:global because Astro-scoped styles never match runtime-created DOM.
    * Mirrors the is:global pattern used by [modo].astro for quiz classes.
    * Classes are prefixed .panel__ to avoid collision with quiz classes.
-   *
-   * Populated in Slice 2. Reserved here as a comment placeholder.
+   * All colors use design tokens so dark mode is free.
    */
+
+  /* KPI grid — 5 cards responsive */
+  .panel__kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .panel__kpi-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    text-align: center;
+  }
+
+  .panel__kpi-value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-2xl);
+    color: var(--accent);
+    line-height: 1;
+    /* Skeleton placeholder sizing */
+    min-height: 2.1rem;
+    width: 100%;
+  }
+
+  .panel__kpi-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    /* Skeleton placeholder sizing */
+    min-height: 1rem;
+    width: 100%;
+  }
+
+  /* Skeleton sizing within KPI cards */
+  .panel__kpi-card .skeleton.panel__kpi-value {
+    height: 2.1rem;
+  }
+
+  .panel__kpi-card .skeleton.panel__kpi-label {
+    height: 0.9rem;
+    width: 70%;
+    margin-inline: auto;
+  }
 </style>
