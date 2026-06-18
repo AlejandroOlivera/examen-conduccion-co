@@ -16,6 +16,9 @@ export default tseslint.config(
       'public/theme.js',
       'public/category.js',
       'public/panel-guard.js',
+      // PWA scripts: service worker (ServiceWorkerGlobalScope) y registro.
+      'public/sw.js',
+      'public/sw-register.js',
     ],
   },
 

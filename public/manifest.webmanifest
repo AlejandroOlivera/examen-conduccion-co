@@ -1,0 +1,30 @@
+{
+  "name": "Taller B1 - Examen de conduccion",
+  "short_name": "Taller B1",
+  "description": "Practica el examen teorico de la licencia de conduccion B1 en Colombia. Preguntas oficiales, simulacros cronometrados y modo de practica con retroalimentacion inmediata.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "es-CO",
+  "background_color": "#f4f1ea",
+  "theme_color": "#1c2024",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
