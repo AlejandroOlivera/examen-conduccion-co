@@ -26,6 +26,11 @@ pnpm-debug.log*
 # astro
 .astro/
 
+# playwright
+playwright-report/
+test-results/
+/playwright/.cache/
+
 # tooling de IA local
 .agents/
 .claude/
