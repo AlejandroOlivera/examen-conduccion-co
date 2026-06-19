@@ -21,7 +21,10 @@ export const questionSchema = z
     options: z.array(z.string().min(1)).min(2),
     answer: z.number().int().nonnegative(),
     explanation: z.string().min(5),
-    image: z.string().optional(),
+    image: z
+      .string()
+      .regex(/^\/senales\/[a-z0-9-]+\.svg$/)
+      .optional(),
     imageAlt: z.string().optional(),
   })
   .refine((q) => q.answer < q.options.length, {
