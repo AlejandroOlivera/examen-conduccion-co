@@ -134,6 +134,18 @@ const speeds = [
     </div>
   </section>
 
+  <!-- Recursos -->
+  <section class="container section--sm">
+    <a class="recursos-link" href="/senales">
+      <span class="recursos-link__icon" aria-hidden="true">🚦</span>
+      <span class="recursos-link__text">
+        <strong>Catalogo de senales de transito</strong>
+        <small>Repasa el significado de cada senal antes de practicar</small>
+      </span>
+      <span class="recursos-link__arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </section>
+
   <SiteFooter slot="footer" />
 </BaseLayout>
 
@@ -297,5 +309,53 @@ const speeds = [
   .speed__via {
     color: var(--ink-soft);
     font-size: 0.9rem;
+  }
+
+  .section--sm {
+    padding-block: clamp(1rem, 3vw, 2rem);
+  }
+  .recursos-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--space-4) var(--space-5);
+    text-decoration: none;
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+    transition:
+      box-shadow var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+    max-width: 520px;
+  }
+  .recursos-link:hover {
+    box-shadow: var(--shadow);
+    border-color: var(--ink-faint);
+  }
+  .recursos-link__icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+  .recursos-link__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+  }
+  .recursos-link__text strong {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 700;
+  }
+  .recursos-link__text small {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+  }
+  .recursos-link__arrow {
+    color: var(--ink-faint);
+    font-size: 1.3rem;
+    flex-shrink: 0;
   }
 </style>
