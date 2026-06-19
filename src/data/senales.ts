@@ -1,3 +1,6 @@
+// Catalogo de senales. Arte: las senales geometricas/textuales (PARE, velocidades, etc.)
+// son SVG propios; las pictograficas provienen de Wikimedia Commons "SVG road signs in
+// Colombia" (etiquetadas PD-ineligible, sin atribucion requerida).
 export interface Senal {
   slug: string;
   nombre: string;
@@ -220,6 +223,136 @@ export const SENALES: Senal[] = [
       'El rombo amarillo con figura de peaton es una senal preventiva que advierte la presencia de peatones en la via o zona adyacente; el conductor debe reducir velocidad y ceder el paso.',
     metaDescription:
       'Zona de peatones: rombo amarillo que advierte presencia de personas en la via. Reducir velocidad y ceder el paso.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'curva-peligrosa-izquierda',
+    nombre: 'Curva peligrosa a la izquierda',
+    categoria: 'preventiva',
+    imagen: '/senales/curva-peligrosa-izquierda.svg',
+    alt: 'Rombo amarillo con flecha negra que dobla a la izquierda',
+    significado:
+      'Advierte una curva peligrosa hacia la izquierda. El conductor debe reducir la velocidad y mantenerse en su carril antes de tomarla.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'curva-y-contracurva',
+    nombre: 'Curva y contracurva',
+    categoria: 'preventiva',
+    imagen: '/senales/curva-y-contracurva.svg',
+    alt: 'Rombo amarillo con flecha en forma de S que indica curva y contracurva',
+    significado:
+      'Advierte una curva seguida de otra en sentido contrario. Reducir la velocidad y extremar la atencion en ambos giros.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'interseccion',
+    nombre: 'Interseccion de vias',
+    categoria: 'preventiva',
+    imagen: '/senales/interseccion.svg',
+    alt: 'Rombo amarillo con una cruz negra que representa una interseccion de vias',
+    significado:
+      'Advierte un cruce de vias a nivel adelante. Reducir la velocidad y estar atento a los vehiculos que ingresan por la via transversal.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'semaforo',
+    nombre: 'Semaforo',
+    categoria: 'preventiva',
+    imagen: '/senales/semaforo.svg',
+    alt: 'Rombo amarillo con un semaforo de tres luces: roja, amarilla y verde',
+    significado:
+      'Advierte la proximidad de un semaforo. El conductor debe disminuir la velocidad y prepararse para detenerse segun la luz.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'resalto',
+    nombre: 'Resalto',
+    categoria: 'preventiva',
+    imagen: '/senales/resalto.svg',
+    alt: 'Rombo amarillo con la silueta de un resalto sobre la calzada',
+    significado:
+      'Advierte un resalto o reductor de velocidad sobre la via. El conductor debe disminuir la velocidad para pasarlo con seguridad.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'pare-adelante',
+    nombre: 'Prevencion de pare',
+    categoria: 'preventiva',
+    imagen: '/senales/pare-adelante.svg',
+    alt: 'Rombo amarillo con una senal de PARE roja y una flecha hacia arriba',
+    significado:
+      'Anticipa una senal de PARE mas adelante. El conductor debe prepararse para detenerse por completo en el punto indicado.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'ceda-el-paso-adelante',
+    nombre: 'Prevencion de ceda el paso',
+    categoria: 'preventiva',
+    imagen: '/senales/ceda-el-paso-adelante.svg',
+    alt: 'Rombo amarillo con una senal de Ceda el Paso y una flecha hacia arriba',
+    significado:
+      'Anticipa una senal de Ceda el Paso mas adelante. El conductor debe prepararse para ceder el paso a la via prioritaria.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'tunel',
+    nombre: 'Tunel',
+    categoria: 'preventiva',
+    imagen: '/senales/tunel.svg',
+    alt: 'Rombo amarillo con la entrada de un tunel',
+    significado:
+      'Advierte la proximidad de un tunel. El conductor debe encender las luces, reducir la velocidad y no adelantar dentro del tunel.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'zona-derrumbe',
+    nombre: 'Zona de derrumbe',
+    categoria: 'preventiva',
+    imagen: '/senales/zona-derrumbe.svg',
+    alt: 'Rombo amarillo con un vehiculo y rocas cayendo por una ladera',
+    significado:
+      'Advierte una zona propensa a derrumbes o caida de rocas sobre la via. Extremar la precaucion y estar atento a obstaculos en la calzada.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'superficie-deslizante',
+    nombre: 'Superficie deslizante',
+    categoria: 'preventiva',
+    imagen: '/senales/superficie-deslizante.svg',
+    alt: 'Rombo amarillo con un vehiculo derrapando sobre marcas de deslizamiento',
+    significado:
+      'Advierte que la via puede ser deslizante, sobre todo con lluvia. Reducir la velocidad y evitar frenadas y maniobras bruscas.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'maquinaria-agricola',
+    nombre: 'Maquinaria agricola en la via',
+    categoria: 'preventiva',
+    imagen: '/senales/maquinaria-agricola.svg',
+    alt: 'Rombo amarillo con la silueta de un tractor',
+    significado:
+      'Advierte la posible presencia de maquinaria agricola en la via. El conductor debe reducir la velocidad y extremar la atencion.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
+  },
+  {
+    slug: 'zona-escolar',
+    nombre: 'Zona escolar',
+    categoria: 'preventiva',
+    imagen: '/senales/zona-escolar.svg',
+    alt: 'Pentagono verde con la figura de dos estudiantes caminando',
+    significado:
+      'Pentagono verde que advierte una zona escolar y el cruce de estudiantes. Reducir la velocidad al maximo y ceder el paso a los ninos.',
+    norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024) — Ley 2251 de 2022',
+  },
+  {
+    slug: 'animales-en-via',
+    nombre: 'Animales en la via',
+    categoria: 'preventiva',
+    imagen: '/senales/animales-en-via.svg',
+    alt: 'Rombo amarillo con la silueta de una vaca',
+    significado:
+      'Advierte la posible presencia o el cruce de animales en la via. El conductor debe reducir la velocidad y estar preparado para detenerse.',
     norma: 'Manual de Senalizacion Vial (Resolucion 20243040045005 de 2024)',
   },
 ];
