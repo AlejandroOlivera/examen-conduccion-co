@@ -910,6 +910,70 @@ const CARRO_QUESTIONS = [
     explanation:
       'El rombo amarillo con flecha curva es una senal preventiva que advierte una curva peligrosa a la derecha; el conductor debe reducir la velocidad.',
   },
+  {
+    id: 'g3-26',
+    group: 'III',
+    prompt: '¿Qué indica esta señal?',
+    image: '/senales/no-entre.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'No entre; acceso prohibido en esa via',
+      'Via de doble sentido',
+      'Zona de trabajo; precaucion',
+      'Reduccion de velocidad obligatoria',
+    ],
+    answer: 0,
+    explanation:
+      'La senal de no entre (circulo rojo relleno con barra blanca horizontal) indica que el ingreso a esa via esta prohibido para todos los vehiculos.',
+  },
+  {
+    id: 'g3-27',
+    group: 'III',
+    prompt: '¿Qué indica esta señal?',
+    image: '/senales/velocidad-maxima-80.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Minimo 80 km/h en la via',
+      'Limite de velocidad en 80 km/h',
+      'Zona escolar a 80 metros',
+      'Via con peaje cada 80 km',
+    ],
+    answer: 1,
+    explanation:
+      'El circulo blanco con borde rojo y el numero 80 es una senal restrictiva que fija la velocidad maxima permitida en 80 km/h en ese tramo.',
+  },
+  {
+    id: 'g3-28',
+    group: 'III',
+    prompt: '¿Qué indica esta señal?',
+    image: '/senales/prohibido-parquear.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Solo se puede parquear con tarjeta',
+      'Estacionamiento reservado para discapacitados',
+      'Parquear en ese sector esta prohibido',
+      'Zona de cargue y descargue exclusiva',
+    ],
+    answer: 2,
+    explanation:
+      'La senal de prohibido parquear (circulo con "E" y barra diagonal roja) indica que detener o estacionar el vehiculo en esa zona esta prohibido.',
+  },
+  {
+    id: 'g3-29',
+    group: 'III',
+    prompt: '¿Qué indica esta señal?',
+    image: '/senales/peatones.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Prohibicion de paso peatonal',
+      'Cruce o zona de circulacion de peatones; precaucion',
+      'Area de carga de pasajeros',
+      'Via exclusiva para peatones; vehiculos prohibidos',
+    ],
+    answer: 1,
+    explanation:
+      'El rombo amarillo con figura de peaton es una senal preventiva que advierte la presencia de peatones; el conductor debe reducir velocidad y ceder el paso.',
+  },
 
   // ───────────────────────── GRUPO IV ─────────────────────────
   {
@@ -1577,6 +1641,59 @@ const MOTO_QUESTIONS = [
     explanation:
       'Conducir sin licencia valida es una infraccion sancionable con multa e inmovilizacion del vehiculo (CNTT).',
   },
+  {
+    id: 'm-g1-13',
+    group: 'I',
+    prompt:
+      '¿Cuál es la edad mínima para obtener la licencia de conducción categoría A1 en Colombia?',
+    options: ['14 años', '16 años', '18 años', '21 años'],
+    answer: 1,
+    explanation:
+      'La categoria A1 (motocicletas hasta 125 cc) se puede obtener desde los 16 anos, con el cumplimiento del proceso de formacion y la prueba teorica ante el organismo de transito.',
+  },
+  {
+    id: 'm-g1-14',
+    group: 'I',
+    prompt: 'El Registro Único Nacional de Tránsito (RUNT) tiene como función principal:',
+    options: [
+      'Recaudar el impuesto de rodamiento',
+      'Centralizar y validar la informacion de vehiculos, conductores, licencias e infracciones a nivel nacional',
+      'Emitir el SOAT de manera directa',
+      'Administrar los cursos de conduccion de cada municipio',
+    ],
+    answer: 1,
+    explanation:
+      'El RUNT es el sistema oficial que centraliza los registros de vehiculos, conductores, licencias, seguros e infracciones en Colombia, garantizando informacion confiable y en linea para las autoridades.',
+  },
+  {
+    id: 'm-g1-15',
+    group: 'I',
+    prompt: 'La licencia de conducción categoría A2 habilita para conducir:',
+    options: [
+      'Solo motocicletas electricas de cualquier potencia',
+      'Motocicletas, motociclos y mototriciclos de cualquier cilindraje',
+      'Unicamente cuatrimotos en via publica',
+      'Motocicletas hasta 200 cc',
+    ],
+    answer: 1,
+    explanation:
+      'La categoria A2 autoriza la conduccion de motocicletas, motociclos y mototriciclos sin limitacion de cilindraje, a diferencia de la A1 que esta restringida hasta 125 cc.',
+  },
+  {
+    id: 'm-g1-16',
+    group: 'I',
+    prompt:
+      'Cuando una autoridad de tránsito solicita los documentos del motociclista, ¿cuáles debe portar?',
+    options: [
+      'Solo la cedula de ciudadania',
+      'Licencia de conduccion, tarjeta de propiedad, SOAT vigente y certificado de revision tecnico-mecanica',
+      'Licencia de conduccion y pasaporte',
+      'Solo el SOAT y la cedula',
+    ],
+    answer: 1,
+    explanation:
+      'El CNTT establece que el conductor debe portar la licencia de conduccion, la tarjeta de propiedad del vehiculo, el SOAT vigente y el certificado de revision tecnico-mecanica (RTM) cuando corresponda.',
+  },
   // ───────────────────────── GRUPO II ─────────────────────────
   {
     id: 'm-g2-01',
@@ -1746,6 +1863,63 @@ const MOTO_QUESTIONS = [
     answer: 1,
     explanation:
       'La fatiga reduce la atencion y el tiempo de reaccion; conducir cansado eleva el riesgo de accidente y debe evitarse.',
+  },
+  {
+    id: 'm-g2-13',
+    group: 'II',
+    prompt: 'El casco de seguridad para motociclistas debe cumplir:',
+    options: [
+      'Cualquier diseno, siempre que cubra la cabeza',
+      'Las normas tecnicas colombianas NTC homologadas o estandares internacionales equivalentes reconocidos',
+      'Solo tener barboquejo; el material no importa',
+      'Ser de color blanco para mayor visibilidad',
+    ],
+    answer: 1,
+    explanation:
+      'La ley exige que el casco cumpla normas tecnicas homologadas (NTC o estandar equivalente reconocido); un casco sin certificacion no ofrece proteccion garantizada y su uso constituye infraccion.',
+  },
+  {
+    id: 'm-g2-14',
+    group: 'II',
+    prompt: 'En una vía con velocidad máxima de 60 km/h, ¿cuál es el límite para motociclistas?',
+    options: [
+      'Pueden circular a 80 km/h si hay poca densidad',
+      'El mismo limite aplica: 60 km/h',
+      'Pueden superar el limite en 20 km/h por su menor masa',
+      '40 km/h por ser vehículo de dos ruedas',
+    ],
+    answer: 1,
+    explanation:
+      'Los motociclistas estan sujetos a los mismos limites de velocidad definidos por la senalizacion vial; no existe excepcion de cilindraje ni de masa que autorice superar el limite.',
+  },
+  {
+    id: 'm-g2-15',
+    group: 'II',
+    prompt:
+      'La distancia de seguimiento segura entre una motocicleta y el vehículo de adelante debe ser:',
+    options: [
+      'Al menos la que permita detenerse sin colisionar si el vehiculo de adelante frena bruscamente',
+      'No importa si se circula a baja velocidad',
+      'Solo 1 metro en zonas urbanas',
+      'La misma que entre dos camiones',
+    ],
+    answer: 0,
+    explanation:
+      'El CNTT exige mantener distancia suficiente para detenerse de forma segura si el vehiculo de adelante frena; en la practica se recomienda al menos 2 segundos de separacion.',
+  },
+  {
+    id: 'm-g2-16',
+    group: 'II',
+    prompt: 'Está prohibido para el motociclista:',
+    options: [
+      'Usar carril derecho en vias de varios carriles',
+      'Llevar un acompanante en el asiento trasero',
+      'Conducir entre dos filas de vehiculos en movimiento (zigzaguear entre carriles)',
+      'Encender las luces durante el dia',
+    ],
+    answer: 2,
+    explanation:
+      'El zigzagueo o conduccion entre carriles en movimiento esta expresamente prohibido; aumenta el riesgo de colision y constituye infraccion al CNTT.',
   },
   // ───────────────────────── GRUPO III ─────────────────────────
   {
@@ -1970,6 +2144,95 @@ const MOTO_QUESTIONS = [
     explanation:
       'El rombo amarillo con flecha curva advierte una curva peligrosa a la derecha. El motociclista debe reducir velocidad y ajustar la trayectoria con anticipacion.',
   },
+  {
+    id: 'm-g3-16',
+    group: 'III',
+    prompt: '¿Qué indica esta señal?',
+    image: '/senales/no-entre.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Via de un solo sentido permitido',
+      'Zona de descargue exclusiva',
+      'No entre; acceso prohibido para cualquier vehiculo incluyendo motocicletas',
+      'Reduccion de velocidad a 0 km/h',
+    ],
+    answer: 2,
+    explanation:
+      'La senal de no entre prohíbe el ingreso a todos los vehiculos, incluidas las motocicletas; ingresar genera comparendo por infraccion a senales de transito.',
+  },
+  {
+    id: 'm-g3-17',
+    group: 'III',
+    prompt: '¿Qué indica esta señal?',
+    image: '/senales/glorieta.svg',
+    imageAlt: 'Senal de transito para identificar',
+    options: [
+      'Interseccion con semaforo proximo',
+      'Glorieta o rotonda proxima; ceder el paso a vehiculos que circulan dentro',
+      'Via sin salida en forma circular',
+      'Zona de giro en U permitido',
+    ],
+    answer: 1,
+    explanation:
+      'El rombo amarillo con flechas circulares advierte la proximidad de una glorieta. El motociclista debe ceder el paso a quienes ya circulan dentro de la rotonda.',
+  },
+  {
+    id: 'm-g3-18',
+    group: 'III',
+    prompt: 'Una línea continua amarilla en el centro de la vía indica:',
+    options: [
+      'Se puede adelantar con precaucion',
+      'Prohibicion de adelantar o invadir el carril contrario',
+      'Via de doble sentido sin restricciones',
+      'Zona de parqueo nocturno',
+    ],
+    answer: 1,
+    explanation:
+      'La linea continua amarilla en el centro prohíbe adelantar o cruzar hacia el carril opuesto; solo la linea discontinua lo permite cuando es seguro.',
+  },
+  {
+    id: 'm-g3-19',
+    group: 'III',
+    prompt: 'Ante una luz amarilla de semáforo, el motociclista debe:',
+    options: [
+      'Acelerar para cruzar antes de que cambie a rojo',
+      'Detenerse si puede hacerlo con seguridad antes de la linea de pare',
+      'Activar la bocina y continuar',
+      'Reducir a 10 km/h y cruzar',
+    ],
+    answer: 1,
+    explanation:
+      'La luz amarilla indica que el semaforo esta a punto de cambiar a rojo; el conductor debe prepararse para detenerse. Acelerar para cruzar es una infraccion y representa riesgo de colision.',
+  },
+  {
+    id: 'm-g3-20',
+    group: 'III',
+    prompt:
+      'El carril de la derecha en una vía urbana de varios carriles está destinado principalmente a:',
+    options: [
+      'Vehiculos de alta velocidad que desean adelantar',
+      'Motos en todo momento sin restriccion',
+      'Trafico lento, buses, y acceso a propiedades; los vehiculos deben transitar por el carril de la derecha salvo para adelantar',
+      'Ciclistas unicamente',
+    ],
+    answer: 2,
+    explanation:
+      'El carril derecho es el carril de circulacion normal para la mayoria de vehiculos; el izquierdo se reserva para adelantamientos. Las motos no tienen uso exclusivo del carril derecho.',
+  },
+  {
+    id: 'm-g3-21',
+    group: 'III',
+    prompt: 'Una señal octogonal roja con la palabra PARE obliga al motociclista a:',
+    options: [
+      'Reducir velocidad a 20 km/h',
+      'Detener completamente el vehiculo y ceder el paso antes de continuar',
+      'Ceder el paso solo si hay vehiculos visibles',
+      'Detenerse unicamente si hay peaton cruzando',
+    ],
+    answer: 1,
+    explanation:
+      'La senal PARE exige detencion total (velocidad cero) independientemente de si hay trafico visible; el conductor debe verificar que sea seguro avanzar antes de continuar.',
+  },
   // ───────────────────────── GRUPO IV ─────────────────────────
   {
     id: 'm-g4-01',
@@ -2139,6 +2402,63 @@ const MOTO_QUESTIONS = [
     answer: 1,
     explanation:
       'La autoridad puede suspender o cancelar la licencia de conduccion ante infracciones graves o reincidencia, conforme al CNTT.',
+  },
+  {
+    id: 'm-g4-13',
+    group: 'IV',
+    prompt:
+      'La Ley 1696 de 2013 establece grados de alcoholemia. ¿Cuál es el límite máximo permitido para motociclistas en Colombia?',
+    options: [
+      '0,8 gramos de alcohol por litro de sangre',
+      '0,4 gramos de alcohol por litro de sangre',
+      '0,2 gramos de alcohol por litro de sangre',
+      'Cero — nivel de alcohol permitido es 0,0 para todos los conductores',
+    ],
+    answer: 3,
+    explanation:
+      'La Ley 1696/2013 fijo en cero el nivel de alcohol permitido para conductores de motos (y camiones). Cualquier nivel detectable implica infraccion; las sanciones escalan segun el grado de alcoholemia.',
+  },
+  {
+    id: 'm-g4-14',
+    group: 'IV',
+    prompt: 'El SOAT (Seguro Obligatorio de Accidentes de Tránsito) cubre:',
+    options: [
+      'Danos materiales al vehiculo del motociclista',
+      'Gastos medicos, incapacidad permanente y muerte de victimas de siniestros viales',
+      'Hurto de la motocicleta',
+      'Multas e infracciones de transito',
+    ],
+    answer: 1,
+    explanation:
+      'El SOAT es un seguro obligatorio que ampara a las victimas de siniestros viales cubriendo gastos medicos, incapacidad y muerte; no cubre danos materiales ni hurto.',
+  },
+  {
+    id: 'm-g4-15',
+    group: 'IV',
+    prompt: 'La Revisión Técnico-Mecánica (RTM) de una motocicleta:',
+    options: [
+      'Es voluntaria y solo se exige al vender el vehiculo',
+      'Es obligatoria y debe realizarse en los plazos establecidos segun el ano del vehiculo',
+      'Solo aplica a motos con mas de 1000 cc',
+      'La realiza el propio propietario sin necesidad de CDA',
+    ],
+    answer: 1,
+    explanation:
+      'La RTM es obligatoria para todas las motocicletas; su periodicidad depende del ano del modelo. Circular sin RTM vigente genera comparendo e inmovilizacion del vehiculo.',
+  },
+  {
+    id: 'm-g4-16',
+    group: 'IV',
+    prompt: 'Un conductor de motocicleta que se da a la fuga tras un siniestro con heridos:',
+    options: [
+      'Solo responde si la Policia lo identifica dentro de 24 horas',
+      'Comete una infraccion adicional al abandonar la escena y puede enfrentar cargos penales',
+      'Queda exonerado si el otro conductor tambien infringio una norma',
+      'Solo paga una multa adicional menor',
+    ],
+    answer: 1,
+    explanation:
+      'Darse a la fuga despues de un siniestro con victimas agrava la responsabilidad del conductor; ademas de la infraccion de transito, puede incurrir en responsabilidad penal por abandono de la escena.',
   },
   // ───────────────────────── CASOS ─────────────────────────
   {
