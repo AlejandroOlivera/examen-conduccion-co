@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { SENALES } from '../data/senales';
+import type { Senal } from '../data/senales';
+
+const categorias: Array<{ key: Senal['categoria']; label: string; description: string }> = [
+  {
+    key: 'reglamentaria',
+    label: 'Reglamentarias (SR)',
+    description:
+      'Indican obligaciones, prohibiciones y restricciones. Su incumplimiento es una infraccion de transito.',
+  },
+  {
+    key: 'preventiva',
+    label: 'Preventivas (SP)',
+    description: 'Advierten condiciones peligrosas o situaciones especiales en la via.',
+  },
+  {
+    key: 'informativa',
+    label: 'Informativas (SI)',
+    description: 'Orientan al usuario sobre destinos, distancias y servicios.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Senales de transito Colombia',
+  description: 'Catalogo de senales de transito segun el Manual de Senalizacion Vial de Colombia.',
+  numberOfItems: SENALES.length,
+  itemListElement: SENALES.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: s.nombre,
+    url: new URL(`/senales/${s.slug}`, Astro.site).href,
+  })),
+};
+---
+
+<BaseLayout
+  title="Senales de transito Colombia — Taller B1"
+  description="Catalogo ilustrado de las senales de transito en Colombia segun el Manual de Senalizacion Vial. Aprende el significado de cada senal y prepara tu examen de conduccion."
+  jsonLd={jsonLd}
+>
+  <SiteHeader slot="header" backHref="/" backLabel="Inicio" />
+
+  <div class="container page">
+    <header class="page-head">
+      <h1>Senales de transito en Colombia</h1>
+      <p class="page-lead">
+        El Manual de Senalizacion Vial (Resolucion 1885 de 2015) clasifica las senales en
+        reglamentarias, preventivas e informativas. Conocer su significado es obligatorio para
+        obtener la Licencia B1 en el CALE.
+      </p>
+    </header>
+
+    {
+      categorias.map(({ key, label, description }) => {
+        const group = SENALES.filter((s) => s.categoria === key);
+        if (group.length === 0) return null;
+        return (
+          <section class="categoria">
+            <header class="categoria__head">
+              <h2>
+                <span class:list={['badge', `badge--${key}`]}>{label}</span>
+              </h2>
+              <p class="categoria__desc">{description}</p>
+            </header>
+            <ul class="grid" role="list">
+              {group.map((senal) => (
+                <li>
+                  <a class="card" href={`/senales/${senal.slug}`}>
+                    <div class="card__img">
+                      <img
+                        src={senal.imagen}
+                        alt={senal.alt}
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                      />
+                    </div>
+                    <p class="card__nombre">{senal.nombre}</p>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })
+    }
+
+    <div class="cta-bottom">
+      <p>
+        Listo para practicar? El grupo III del CALE incluye preguntas sobre senales de transito.
+      </p>
+      <a class="btn btn--dark" href="/examen/carro/grupo-3">Practica con preguntas de senales</a>
+    </div>
+  </div>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(2rem, 5vw, 4rem);
+  }
+  .page-head {
+    max-width: 62ch;
+    margin-bottom: var(--space-7);
+  }
+  .page-head h1 {
+    font-size: var(--text-3xl);
+    line-height: 1.05;
+    margin-bottom: var(--space-3);
+  }
+  .page-lead {
+    color: var(--ink-soft);
+    font-size: var(--text-lg);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .categoria {
+    margin-bottom: var(--space-8);
+  }
+  .categoria__head {
+    margin-bottom: var(--space-5);
+  }
+  .categoria__head h2 {
+    margin: 0 0 var(--space-2);
+  }
+  .categoria__desc {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    padding: 0.2em 0.7em;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+  .badge--reglamentaria {
+    background: var(--signal-red-bg);
+    color: var(--signal-red);
+  }
+  .badge--preventiva {
+    background: var(--signal-amber-bg);
+    color: var(--signal-amber-dark);
+  }
+  .badge--informativa {
+    background: var(--signal-blue-bg);
+    color: var(--signal-blue);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--space-5) var(--space-4);
+    text-decoration: none;
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+    transition:
+      box-shadow var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+    text-align: center;
+  }
+  .card:hover {
+    box-shadow: var(--shadow);
+    border-color: var(--ink-faint);
+    transform: translateY(-2px);
+  }
+
+  .card__img {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card__img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .card__nombre {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .cta-bottom {
+    padding: var(--space-6);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    justify-content: space-between;
+    margin-top: var(--space-6);
+  }
+  .cta-bottom p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    max-width: 50ch;
+  }
+</style>

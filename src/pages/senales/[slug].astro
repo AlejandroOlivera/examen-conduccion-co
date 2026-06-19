@@ -1,0 +1,231 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { SENALES } from '../../data/senales';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return SENALES.map((s) => ({ params: { slug: s.slug }, props: { senal: s } }));
+};
+
+interface Props {
+  senal: (typeof SENALES)[number];
+}
+
+const { senal } = Astro.props;
+
+const categoriaLabel: Record<string, string> = {
+  reglamentaria: 'Reglamentaria (SR)',
+  preventiva: 'Preventiva (SP)',
+  informativa: 'Informativa (SI)',
+};
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTerm',
+    name: senal.nombre,
+    description: senal.significado,
+    url: new URL(`/senales/${senal.slug}`, Astro.site).href,
+    image: new URL(senal.imagen, Astro.site).href,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: new URL('/', Astro.site).href },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Senales',
+        item: new URL('/senales', Astro.site).href,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: senal.nombre,
+        item: new URL(`/senales/${senal.slug}`, Astro.site).href,
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={`${senal.nombre} — Senal de transito | Taller B1`}
+  description={senal.metaDescription ?? senal.significado}
+  jsonLd={jsonLd}
+>
+  <SiteHeader slot="header" backHref="/senales" backLabel="Senales" />
+
+  <div class="container page">
+    <nav class="breadcrumb" aria-label="Migas de pan">
+      <ol>
+        <li><a href="/">Inicio</a></li>
+        <li aria-hidden="true" class="sep">/</li>
+        <li><a href="/senales">Senales</a></li>
+        <li aria-hidden="true" class="sep">/</li>
+        <li aria-current="page">{senal.nombre}</li>
+      </ol>
+    </nav>
+
+    <div class="detail">
+      <div class="detail__img">
+        <img src={senal.imagen} alt={senal.alt} width="200" height="200" />
+      </div>
+
+      <div class="detail__body">
+        <span class:list={['badge', `badge--${senal.categoria}`]}>
+          {categoriaLabel[senal.categoria]}
+        </span>
+        <h1>{senal.nombre}</h1>
+        <p class="significado">{senal.significado}</p>
+
+        {
+          senal.norma && (
+            <div class="norma">
+              <span class="norma__label">Referencia normativa</span>
+              <p class="norma__text">{senal.norma}</p>
+            </div>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="cta-bottom">
+      <a class="btn btn--dark" href="/examen/carro/grupo-3">Practica con senales reales</a>
+    </div>
+  </div>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(2rem, 5vw, 4rem);
+  }
+
+  .breadcrumb {
+    margin-bottom: var(--space-6);
+  }
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+  }
+  .breadcrumb a {
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .breadcrumb a:hover {
+    color: var(--ink);
+  }
+  .sep {
+    color: var(--ink-faint);
+    user-select: none;
+  }
+
+  .detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-7);
+    align-items: flex-start;
+    margin-bottom: var(--space-7);
+  }
+
+  .detail__img {
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .detail__img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .detail__body {
+    flex: 1;
+    min-width: 260px;
+  }
+  .detail__body h1 {
+    font-size: var(--text-3xl);
+    line-height: 1.05;
+    margin: var(--space-3) 0 var(--space-4);
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-xs);
+    padding: 0.2em 0.8em;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .badge--reglamentaria {
+    background: var(--signal-red-bg);
+    color: var(--signal-red);
+  }
+  .badge--preventiva {
+    background: var(--signal-amber-bg);
+    color: var(--signal-amber-dark);
+  }
+  .badge--informativa {
+    background: var(--signal-blue-bg);
+    color: var(--signal-blue);
+  }
+
+  .significado {
+    font-size: var(--text-lg);
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 var(--space-5);
+    max-width: 62ch;
+  }
+
+  .norma {
+    background: var(--paper-2);
+    border-left: 3px solid var(--signal-amber-dark);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: var(--space-3) var(--space-4);
+  }
+  .norma__label {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--signal-amber-dark);
+    margin-bottom: var(--space-1);
+  }
+  .norma__text {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .cta-bottom {
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+</style>

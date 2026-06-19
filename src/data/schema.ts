@@ -57,3 +57,26 @@ export const examModeSchema = z.object({
   passPercent: z.number().int().min(1).max(100).optional(),
   accent: z.enum(['verde', 'ambar', 'rojo', 'azul', 'asfalto']),
 });
+
+export const senalCategoriaSchema = z.enum(['reglamentaria', 'preventiva', 'informativa']);
+
+export const senalSchema = z.object({
+  slug: z.string().min(1),
+  nombre: z.string().min(1),
+  categoria: senalCategoriaSchema,
+  imagen: z.string().regex(/^\/senales\/[a-z0-9-]+\.svg$/),
+  alt: z.string().min(5),
+  significado: z.string().min(10),
+  norma: z.string().optional(),
+  metaDescription: z.string().max(160).optional(),
+});
+
+export const senalBankSchema = z.array(senalSchema).superRefine((senales, ctx) => {
+  const seen = new Set<string>();
+  senales.forEach((s, i) => {
+    if (seen.has(s.slug)) {
+      ctx.addIssue({ code: 'custom', message: `Slug duplicado: ${s.slug}`, path: [i, 'slug'] });
+    }
+    seen.add(s.slug);
+  });
+});
