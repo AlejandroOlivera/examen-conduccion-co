@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { QUESTIONS, questionsForGroups } from './questions';
 import { EXAM_MODES } from './modes';
@@ -14,6 +16,17 @@ describe('banco de preguntas', () => {
     const textOnly = QUESTIONS.filter((q) => !q.image);
     const prompts = textOnly.map((q) => q.prompt.trim().toLowerCase());
     expect(new Set(prompts).size).toBe(prompts.length);
+  });
+
+  it('toda pregunta con imagen apunta a un SVG que existe en public/', () => {
+    // Integridad referencial: una ruta `image` rota (typo o senal inexistente)
+    // renderiza un cuadro vacio en el examen. Se valida contra el disco en CI.
+    const withImage = QUESTIONS.filter((q) => q.image);
+    expect(withImage.length).toBeGreaterThan(0);
+    for (const q of withImage) {
+      const file = join(process.cwd(), 'public', q.image!);
+      expect(existsSync(file), `Falta el asset de ${q.id}: ${q.image}`).toBe(true);
+    }
   });
 });
 

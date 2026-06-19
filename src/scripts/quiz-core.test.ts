@@ -62,6 +62,15 @@ describe('prepareQuestion', () => {
     const prepared = prepareQuestion(makeQuestion(), rngSeq([0.3, 0.6, 0.1]));
     expect([...prepared.options].sort()).toEqual(['a', 'b', 'c', 'd']);
   });
+
+  it('preserva image e imageAlt al barajar', () => {
+    const prepared = prepareQuestion(
+      makeQuestion({ image: '/senales/pare.svg', imageAlt: 'Octogono rojo' }),
+      () => 0,
+    );
+    expect(prepared.image).toBe('/senales/pare.svg');
+    expect(prepared.imageAlt).toBe('Octogono rojo');
+  });
 });
 
 describe('sampleQuestions', () => {
